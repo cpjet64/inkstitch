@@ -28,7 +28,7 @@ from .thread_list import get_threadlist
 
 class Zip(InkstitchExtension):
     def __init__(self, *args, **kwargs):
-        InkstitchExtension.__init__(self)
+        InkstitchExtension.__init__(self, *args, **kwargs)
 
         self.arg_parser.add_argument('--notebook')
         self.arg_parser.add_argument('--custom-file-name', type=str, default='', dest='custom_file_name')
