@@ -1664,6 +1664,7 @@ class SatinColumn(EmbroideryElement):
             # zigzag spacing is wider than stitch length, subdivide
             if last_point is not None and max_stitch_length is not None and self.zigzag_spacing > max_stitch_length:
                 initial_points, _ = self.get_split_points(last_point, points[0], last_point, points[0], max_stitch_length)
+                stitch_group.add_stitches(initial_points)
 
             stitch_group.add_stitches(points)
             last_point = points[-1]
