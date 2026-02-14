@@ -35,16 +35,19 @@ from ..utils.cache import (CacheKeyGenerator, get_stitch_plan_cache,
 
 
 class Param(object):
-    def __init__(self, name, description, unit=None, values=[], type=None, group=None, inverse=False,
-                 options=[], default=None, tooltip=None, sort_index=0, select_items=None, enables=None):
+    def __init__(self, name, description, unit=None, values=None, type=None, group=None, inverse=False,
+                 options=None, default=None, tooltip=None, sort_index=0, select_items=None, enables=None):
         self.name = name
         self.description = description
         self.unit = unit
-        self.values = values or [""]
+        if values:
+            self.values = list(values)
+        else:
+            self.values = [""]
         self.type = type
         self.group = group
         self.inverse = inverse
-        self.options = options
+        self.options = list(options) if options else []
         self.default = default
         self.tooltip = tooltip
         self.sort_index = sort_index
