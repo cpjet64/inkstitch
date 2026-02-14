@@ -14,7 +14,7 @@ from .png_simple import write_png_output
 
 class PngRealistic(InkstitchExtension):
     def __init__(self, *args, **kwargs):
-        InkstitchExtension.__init__(self)
+        InkstitchExtension.__init__(self, *args, **kwargs)
 
         self.arg_parser.add_argument('--notebook')
         self.arg_parser.add_argument('--dpi', type=int, default=300, dest='dpi')
