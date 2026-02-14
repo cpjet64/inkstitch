@@ -4,6 +4,7 @@
 # Licensed under the GNU GPL version 3.0 or later.  See the file LICENSE for details.
 
 import os
+import shutil
 import subprocess
 import sys
 
@@ -82,14 +83,17 @@ class SelectElements(InkstitchExtension):
 
         if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
             if sys.platform == "linux":
-                py_path = "python3"
+                py_path = shutil.which("python3") or "python3"
             elif sys.platform.startswith("win"):
                 # sadly we cannot access python interpreters, so we have to guess the file path in windows
                 # and we could be very wrong
                 py_path = 'c:/program files/inkscape/bin/python.exe'
             elif sys.platform == "darwin":
-                py_path = '/Applications/Inkscape.app/Contents/Resources/bin/python3'
-                py_path = 'python3'
+                inkscape_python = '/Applications/Inkscape.app/Contents/Resources/bin/python3'
+                if os.path.isfile(inkscape_python):
+                    py_path = inkscape_python
+                else:
+                    py_path = shutil.which("python3") or "python3"
         else:
             # we are running a local install
             py_path = sys.executable
@@ -98,13 +102,23 @@ class SelectElements(InkstitchExtension):
         if self.options.python_path:
             py_path = self.options.python_path
 
-        if not os.path.isfile(py_path):
+        if not self._python_path_exists(py_path):
             errormsg(_("Could not detect python path. "
                        "Please insert python path manually as described in the help tab "
                        "of the select elements dialog."))
             sys.exit(0)
 
         return py_path, file_path
+
+    def _python_path_exists(self, py_path):
+        if os.path.isfile(py_path):
+            return True
+
+        # Command names (for example "python3") are resolved via PATH.
+        if os.path.dirname(py_path):
+            return False
+
+        return shutil.which(py_path) is not None
 
     def _get_id_list(self):
         if not self.get_elements():
