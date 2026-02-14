@@ -99,7 +99,7 @@ class StitchGroup:
 
         lock_pos = 0 if pos == "start" else 1
         if disable_ties or self.lock_stitches[lock_pos] is None:
-            return
+            return []
 
         stitches = self.lock_stitches[lock_pos].stitches(self.stitches, pos)
         return stitches
