@@ -44,7 +44,7 @@ class Output(InkstitchExtension):
                         value = {
                             "true": True,
                             "false": False
-                        }[value]
+                        }[value.lower()]
                     except (KeyError):
                         pass
 

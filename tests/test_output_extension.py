@@ -27,3 +27,12 @@ def test_parse_arguments_extracts_format_and_passes_through_remaining_args():
     assert extension.file_extension == "jef"
     assert extension.settings == {}
     parse_arguments.assert_called_once()
+
+
+def test_parse_arguments_parses_boolean_values_case_insensitively():
+    extension = object.__new__(Output)
+
+    with patch("lib.extensions.output.InkstitchExtension.parse_arguments"):
+        Output.parse_arguments(extension, ["--format=jef", "--laser_mode=True", "--id=test"])
+
+    assert extension.settings["laser_mode"] is True
