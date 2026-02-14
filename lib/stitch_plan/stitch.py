@@ -145,7 +145,7 @@ class Stitch(Point):
         # they overrode it with arguments.
         if base_stitch is not None:
             setattr(self, attribute, getattr(base_stitch, attribute))
-        if value or base_stitch is None:
+        if value is not None or base_stitch is None:
             setattr(self, attribute, value)
 
     @property
