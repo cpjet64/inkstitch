@@ -7,6 +7,9 @@ import os
 import sys
 import tempfile
 
+from inkex import errormsg
+
+from ..i18n import _
 from ..output import write_embroidery_file
 from ..stitch_plan import stitch_groups_to_stitch_plan
 from ..threads import ThreadCatalog
@@ -49,7 +52,11 @@ class Output(InkstitchExtension):
             else:
                 extra_args.append(arg)
 
-        self.file_extension = self.settings.pop('format')
+        self.file_extension = self.settings.pop('format', None)
+        if not self.file_extension:
+            errormsg(_("No output file format was specified."))
+            sys.exit(1)
+
         del sys.argv[1:]
 
         InkstitchExtension.parse_arguments(self, extra_args)
