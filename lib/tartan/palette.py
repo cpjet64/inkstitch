@@ -5,7 +5,7 @@
 # Additional credits to: https://github.com/clsn/pyTartan
 
 import re
-from typing import TYPE_CHECKING, List, cast
+from typing import TYPE_CHECKING, List, Optional, cast
 
 import wx
 from inkex import Color, ColorError
@@ -21,7 +21,7 @@ class Palette:
     def __init__(
         self,
         palette_code: str = '',
-        palette_stripes: List[list] = [[], []],
+        palette_stripes: Optional[List[list]] = None,
         symmetry: bool = True,
         equal_warp_weft: bool = True,
         tt_unit: float = 0.5
@@ -33,8 +33,13 @@ class Palette:
         :param equal_warp_weft:wether warp and weft are equal or not
         :param tt_unit: mm per thread (used for the scottish register threadcount)
         """
+        if palette_stripes is None:
+            palette_stripes = [[], []]
+
         self.palette_code = palette_code
-        self.palette_stripes = palette_stripes
+        self.palette_stripes = [list(stripes) for stripes in palette_stripes[:2]]
+        while len(self.palette_stripes) < 2:
+            self.palette_stripes.append([])
         self.symmetry = symmetry
         self.equal_warp_weft = equal_warp_weft
         self.tt_unit = tt_unit
@@ -123,7 +128,7 @@ class Palette:
             code[-1] = code[-1].replace(')', ')/')
         code_str = ' '.join(code)
         if not self.symmetry:
-            code_str = f'...{code}...'
+            code_str = f'...{code_str}...'
         self.palette_code = code_str
 
     def parse_simple_code(self, code: str) -> None:
