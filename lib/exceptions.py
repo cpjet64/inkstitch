@@ -13,29 +13,47 @@ class InkstitchException(Exception):
     pass
 
 
+def _generic_os_version():
+    system_name = platform.system() or "Unknown OS"
+    release = platform.release()
+    if release:
+        return f"{system_name} {release}"
+    return system_name
+
+
+def _linux_os_version():
+    # Getting linux version method used here is for systemd and nonsystemd linux.
+    for release_file in glob("/etc/*-release"):
+        try:
+            with open(release_file, encoding="utf-8", errors="ignore") as release_data:
+                for line in release_data:
+                    if line.startswith("PRETTY_NAME="):
+                        return line.split("=", 1)[1].strip().strip('"')
+        except OSError:
+            continue
+
+    return _generic_os_version()
+
+
 def get_os_version():
     if sys.platform == "win32":
         # To get the windows version, python functions are used
         # Using python subprocess with cmd.exe in windows is currently a security risk
-        os_ver = "Windows " + platform.release() + " version: " + platform.version()
-    if sys.platform == "darwin":
-        # macOS command line progam provides accurate info than python functions
-        mac_v1 = subprocess.run(["sw_vers"], capture_output=True, text=True)
-        mac_v1 = str(mac_v1.stdout.strip())
-        mac_v2 = subprocess.run(["uname",  "-m"], capture_output=True, text=True)
-        mac_v2 = str(mac_v2.stdout.strip())
-        os_ver = mac_v1 + "\nCPU:\t\t\t\t" + mac_v2
-    if sys.platform == "linux":
-        # Getting linux version method used here is for systemd and nonsystemd linux.
+        return "Windows " + platform.release() + " version: " + platform.version()
+    elif sys.platform == "darwin":
+        # macOS command line program provides more accurate info than python functions
         try:
-            ltmp = subprocess.run(["cat"] + glob("/etc/*-release"), capture_output=True, text=True)
-            lnx_ver = ltmp.stdout.splitlines()
-            lnx_ver = str(list(filter(lambda x: "PRETTY_NAME" in x, lnx_ver)))
-            os_ver = lnx_ver[15:][:-3]
-        except FileNotFoundError:
-            os_ver = "Cannot get Linux distro version"
+            mac_v1 = subprocess.run(["sw_vers"], capture_output=True, text=True)
+            mac_v1 = str(mac_v1.stdout.strip())
+            mac_v2 = subprocess.run(["uname", "-m"], capture_output=True, text=True)
+            mac_v2 = str(mac_v2.stdout.strip())
+            return mac_v1 + "\nCPU:\t\t\t\t" + mac_v2
+        except OSError:
+            return _generic_os_version()
+    elif sys.platform == "linux":
+        return _linux_os_version()
 
-    return os_ver
+    return _generic_os_version()
 
 
 def format_uncaught_exception():
