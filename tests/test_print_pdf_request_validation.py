@@ -27,6 +27,13 @@ def test_set_defaults_requires_value_key():
     save_defaults.assert_called_once_with({"a": 1})
 
 
+def test_set_defaults_returns_false_on_write_error():
+    server = object.__new__(PrintPreviewServer)
+
+    with patch("lib.extensions.print_pdf.save_defaults", side_effect=OSError):
+        assert server.set_defaults({"value": {"a": 1}}) is False
+
+
 def test_set_palette_requires_name_key():
     server = object.__new__(PrintPreviewServer)
 

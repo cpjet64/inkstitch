@@ -242,8 +242,11 @@ class PrintPreviewServer(Thread):
     def set_defaults(self, payload):
         if not isinstance(payload, dict) or "value" not in payload:
             return False
-        save_defaults(payload["value"])
-        return True
+        try:
+            save_defaults(payload["value"])
+            return True
+        except OSError:
+            return False
 
     def set_palette(self, payload):
         if not isinstance(payload, dict) or "name" not in payload:
