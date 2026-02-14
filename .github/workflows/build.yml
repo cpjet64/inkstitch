@@ -58,7 +58,7 @@ jobs:
 
           python -m pip install pyinstaller
 
-          echo "${{ env.pythonLocation }}\bin" >> $GITHUB_PATH
+          echo "${{ env.pythonLocation }}/bin" >> $GITHUB_PATH
       - name: Tests
         shell: bash
         run: |
@@ -122,7 +122,7 @@ jobs:
 
           python -m pip install pyinstaller
 
-          echo "${{ env.pythonLocation }}\bin" >> $GITHUB_PATH
+          echo "${{ env.pythonLocation }}/bin" >> $GITHUB_PATH
       - name: Tests
         shell: bash
         run: |
@@ -212,7 +212,7 @@ jobs:
         shell: bash
         run: |
           source virtualenv/bin/activate
-          echo "${{ env.pythonLocation }}\bin" >> $GITHUB_PATH
+          echo "${{ env.pythonLocation }}/bin" >> $GITHUB_PATH
           pytest
           deactivate 
       - name: Package distributable    
@@ -265,7 +265,7 @@ jobs:
 
           python -m pip install pyinstaller
 
-          echo "${{ env.pythonLocation }}\bin" >> $GITHUB_PATH
+          echo "${{ env.pythonLocation }}/bin" >> $GITHUB_PATH
       - name: Tests
         shell: bash
         run: |
