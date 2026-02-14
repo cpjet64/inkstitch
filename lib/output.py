@@ -63,7 +63,8 @@ def write_embroidery_file(file_path, stitch_plan, svg, settings=None):
     pattern = pystitch.EmbPattern()
 
     # For later use when writing .dst header title field.
-    pattern.extras['name'] = os.path.splitext(svg.name)[0]
+    svg_name = getattr(svg, "name", None) or ""
+    pattern.extras['name'] = os.path.splitext(svg_name)[0] or "inkstitch"
 
     stitch = Stitch(0, 0)
 

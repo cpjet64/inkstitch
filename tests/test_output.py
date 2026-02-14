@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import PropertyMock, patch
 
 from inkex import Rectangle, SvgDocumentElement
 from inkex.tester import TestCase
@@ -122,3 +122,15 @@ class OutputTest(TestCase):
         errormsg.assert_called_once()
         message = errormsg.call_args[0][0]
         assert "?" in message
+
+    def test_write_embroidery_file_handles_missing_svg_name(self):
+        root = self._build_rect_svg()
+        stitch_plan = self._make_stitch_plan(root)
+
+        with patch.object(type(root), "name", new_callable=PropertyMock, return_value=None), patch(
+            "lib.output.pystitch.write"
+        ) as write_mock:
+            output.write_embroidery_file("test.jef", stitch_plan, root)
+
+        pattern = write_mock.call_args[0][0]
+        assert pattern.extras["name"] == "inkstitch"
