@@ -90,6 +90,9 @@ class _ThreadCatalog(Sequence):
             return palette
 
     def apply_palette(self, stitch_plan, palette):
+        if palette is None:
+            return
+
         for color_block in stitch_plan:
             if color_block.color.chart:
                 # do not overwrite cutwork settings
