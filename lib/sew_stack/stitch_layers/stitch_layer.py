@@ -1,6 +1,7 @@
 from typing import Type
 from ...utils import coordinate_list_to_point_list
 from ...utils.dotdict import DotDict
+from .classproperty import classproperty
 from .stitch_layer_editor import StitchLayerEditor
 
 
@@ -19,15 +20,13 @@ class StitchLayer:
 
         super().__init__(*args, **kwargs)
 
-    @classmethod
-    @property
+    @classproperty
     def defaults(cls):
         # Implement this in each child class.  Return a dict with default
         # values for all properties used in this layer.
         raise NotImplementedError(f"{cls.__name__} must implement class property: defaults")
 
-    @classmethod
-    @property
+    @classproperty
     def layer_id(my_class):
         """Get the internal layer ID
 

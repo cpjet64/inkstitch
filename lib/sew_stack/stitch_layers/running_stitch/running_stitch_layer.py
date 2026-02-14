@@ -2,6 +2,7 @@ from copy import copy
 
 from ..mixins.path import PathMixin, PathPropertiesMixin
 from ..mixins.randomization import RandomizationPropertiesMixin, RandomizationMixin
+from ..classproperty import classproperty
 from ..stitch_layer import StitchLayer
 from ..stitch_layer_editor import Category, Properties, Property
 from ..stitch_layer_editor import StitchLayerEditor
@@ -12,8 +13,7 @@ from ....svg import PIXELS_PER_MM
 
 
 class RunningStitchLayerEditor(StitchLayerEditor, RandomizationPropertiesMixin, PathPropertiesMixin):
-    @classmethod
-    @property
+    @classproperty
     def properties(cls):
         return Properties(
             Category(_("Running Stitch"), help=_("Stitch along a path using evenly-spaced stitches.")).children(
@@ -60,8 +60,7 @@ class RunningStitchLayerEditor(StitchLayerEditor, RandomizationPropertiesMixin, 
 class RunningStitchLayer(StitchLayer, RandomizationMixin, PathMixin):
     editor_class = RunningStitchLayerEditor
 
-    @classmethod
-    @property
+    @classproperty
     def defaults(cls):
         defaults = dict(
             name=_("Running Stitch"),
