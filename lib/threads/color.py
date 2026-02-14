@@ -21,10 +21,23 @@ class ThreadColor(object):
             '''
             color = None
         elif isinstance(color, str) and color.startswith('rgb'):
-            color = tuple(int(value) for value in color[4:-1].split(','))
-            # remove alpha channel
-            if len(color) == 4:
-                color = color[:3]
+            try:
+                values = [value.strip() for value in color[color.find("(") + 1:-1].split(',')]
+                rgb_values = values[:3]
+                parsed_values = []
+                for value in rgb_values:
+                    if value.endswith("%"):
+                        channel = int(round(float(value[:-1]) * 255 / 100))
+                    else:
+                        channel = int(float(value))
+                    parsed_values.append(max(0, min(255, channel)))
+
+                if len(parsed_values) == 3:
+                    color = tuple(parsed_values)
+                else:
+                    color = None
+            except (TypeError, ValueError):
+                color = None
 
         if color is None:
             self.rgb = (0, 0, 0)

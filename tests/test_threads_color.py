@@ -11,6 +11,16 @@ def test_init_color_from_string_rgb():
     assert color.rgb == (170, 187, 204)
 
 
+def test_init_color_from_string_rgba():
+    color = ThreadColor("rgba(170, 187, 204, 0.5)")
+    assert color.rgb == (170, 187, 204)
+
+
+def test_init_color_from_invalid_rgba_does_not_crash():
+    color = ThreadColor("rgba(170, 187, bad, 0.5)")
+    assert color.rgb == (0, 0, 0)
+
+
 def test_init_color_from_string_hex():
     color = ThreadColor("#AABBCC")
     assert color.rgb == (170, 187, 204)
