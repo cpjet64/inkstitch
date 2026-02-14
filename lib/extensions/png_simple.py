@@ -18,7 +18,7 @@ from .utils.inkex_command import inkscape
 
 class PngSimple(InkstitchExtension):
     def __init__(self, *args, **kwargs):
-        InkstitchExtension.__init__(self)
+        InkstitchExtension.__init__(self, *args, **kwargs)
 
         self.arg_parser.add_argument('--notebook')
         self.arg_parser.add_argument('--line_width', type=float, default=0.3, dest='line_width')
