@@ -34,6 +34,7 @@ class ValidationMessage(object):
             self.position = None
         else:
             self.position = InkstitchPoint(*position)
+        self.steps_to_solve = list(self.steps_to_solve)
         self.label = label
 
 
