@@ -29,7 +29,7 @@ from .base import InkstitchExtension
 
 class BatchLettering(InkstitchExtension):
     def __init__(self, *args, **kwargs):
-        InkstitchExtension.__init__(self)
+        InkstitchExtension.__init__(self, *args, **kwargs)
 
         self.arg_parser.add_argument('--notebook')
 
