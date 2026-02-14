@@ -171,20 +171,8 @@ class PrintPreviewServer(Thread):
         @self.app.route('/palette', methods=['POST'])
         def set_palette():
             name = request.json['name']
-            catalog = ThreadCatalog()
-            palette = catalog.get_palette_by_name(name)
-            catalog.apply_palette(self.stitch_plan, palette)
-
-            # clear any saved color or thread names
-            fields_to_clear = [
-                field for field in self.metadata
-                if field.startswith('color-') or field.startswith('thread-')
-            ]
-            for field in fields_to_clear:
-                del self.metadata[field]
-
-            self.metadata['thread-palette'] = name
-
+            if not self.apply_palette(name):
+                return _("Unknown thread palette."), 400
             return "OK"
 
         @self.app.route('/threads', methods=['GET'])
@@ -223,6 +211,25 @@ class PrintPreviewServer(Thread):
     def stop(self):
         self.flask_server.shutdown()
         self.server_thread.join()
+
+    def apply_palette(self, name):
+        catalog = ThreadCatalog()
+        palette = catalog.get_palette_by_name(name)
+        if palette is None:
+            return False
+
+        catalog.apply_palette(self.stitch_plan, palette)
+
+        # clear any saved color or thread names
+        fields_to_clear = [
+            field for field in self.metadata
+            if field.startswith('color-') or field.startswith('thread-')
+        ]
+        for field in fields_to_clear:
+            del self.metadata[field]
+
+        self.metadata['thread-palette'] = name
+        return True
 
     def watch(self):
         try:
