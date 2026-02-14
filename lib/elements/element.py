@@ -508,13 +508,13 @@ class EmbroideryElement(object):
 
     @property
     def shape(self):
-        raise NotImplementedError("INTERNAL ERROR: %s must implement shape()", self.__class__)
+        raise NotImplementedError(f"INTERNAL ERROR: {self.__class__.__name__} must implement shape()")
 
     @property
     def first_stitch(self) -> Optional[ShapelyPoint]:
         # first stitch is an approximation to where the first stitch may possibly be
         # if not defined through commands or repositioned by the previous element
-        raise NotImplementedError("INTERNAL ERROR: %s must implement first_stitch()", self.__class__)
+        raise NotImplementedError(f"INTERNAL ERROR: {self.__class__.__name__} must implement first_stitch()")
 
     @property
     @cache

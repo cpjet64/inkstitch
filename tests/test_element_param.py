@@ -1,4 +1,6 @@
-from lib.elements.element import Param
+import pytest
+
+from lib.elements.element import EmbroideryElement, Param
 
 
 def test_param_default_lists_are_not_shared_between_instances():
@@ -23,3 +25,17 @@ def test_param_copies_caller_lists():
 
     assert param.values == ["v1", "v2"]
     assert param.options == ["o1"]
+
+
+def test_shape_not_implemented_message_is_formatted():
+    element = object.__new__(EmbroideryElement)
+
+    with pytest.raises(NotImplementedError, match="EmbroideryElement must implement shape\\(\\)"):
+        EmbroideryElement.shape.fget(element)
+
+
+def test_first_stitch_not_implemented_message_is_formatted():
+    element = object.__new__(EmbroideryElement)
+
+    with pytest.raises(NotImplementedError, match="EmbroideryElement must implement first_stitch\\(\\)"):
+        EmbroideryElement.first_stitch.fget(element)
