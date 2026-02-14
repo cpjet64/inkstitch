@@ -43,7 +43,7 @@ def load_defaults():
         with open(defaults_path(), 'r') as defaults_file:
             defaults = json.load(defaults_file)
             return defaults
-    except BaseException:
+    except (OSError, TypeError, ValueError, json.JSONDecodeError):
         return {}
 
 
