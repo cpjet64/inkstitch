@@ -263,7 +263,7 @@ class StitchLayerEditor:
         Example:
             return Properties(...)
         """
-        raise NotImplementedError(f"{cls.__name__} must implement properties() with @classmethod and @property decorators!")
+        raise NotImplementedError(f"{cls.__name__} must implement properties() as a classproperty")
 
     def merge_config(self, layers):
         if not layers:
