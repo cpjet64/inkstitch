@@ -172,8 +172,7 @@ class PrintPreviewServer(Thread):
 
         @self.app.route('/palette', methods=['POST'])
         def set_palette():
-            name = request.json['name']
-            if not self.apply_palette(name):
+            if not self.set_palette(request.get_json(silent=True)):
                 return _("Unknown thread palette."), 400
             return "OK"
 
@@ -246,6 +245,11 @@ class PrintPreviewServer(Thread):
             return False
         save_defaults(payload["value"])
         return True
+
+    def set_palette(self, payload):
+        if not isinstance(payload, dict) or "name" not in payload:
+            return False
+        return self.apply_palette(payload["name"])
 
     def watch(self):
         try:
