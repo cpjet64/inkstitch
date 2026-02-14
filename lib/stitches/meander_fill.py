@@ -193,12 +193,14 @@ def post_process(points, shape, original_shape, fill):
         stitches = bean_stitch(stitches, fill.bean_stitch_repeats)
 
     if fill.repeats:
+        base_stitches = list(stitches)
+        reversed_base_stitches = list(reversed(base_stitches))
         for i in range(1, fill.repeats):
             if i % 2 == 1:
                 # reverse every other pass
-                stitches.extend(stitches[::-1])
+                stitches.extend(reversed_base_stitches)
             else:
-                stitches.extend(stitches)
+                stitches.extend(base_stitches)
 
     return stitches
 
