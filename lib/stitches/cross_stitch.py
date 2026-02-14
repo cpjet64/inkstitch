@@ -148,7 +148,7 @@ def _build_eulerian_cycles(subgraphs, starting_point, ending_point, cross_geoms,
 
         if i == 0 and starting_point:
             starting_corner = get_corner(starting_point, subcrosses)
-        elif i == len(subgraphs) and ending_point:
+        elif i == len(subgraphs) - 1 and ending_point:
             starting_corner = get_corner(ending_point, subcrosses)
         else:
             # any corner will do
@@ -217,8 +217,8 @@ def _build_double_cycle(subcrosses, cycle, nb_repeats):
                 break
         if potential_node is None:
             break
-        position, cycle_to_insert = _build_double_row_tour(subcrosses, node, nb_repeats, remove=False)
-        cycle = insert_cycle_at_node(cycle, cycle_to_insert, node)
+        position, cycle_to_insert = _build_double_row_tour(subcrosses, potential_node, nb_repeats, remove=False)
+        cycle = insert_cycle_at_node(cycle, cycle_to_insert, potential_node)
     return cycle
 
 
