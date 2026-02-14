@@ -67,25 +67,28 @@ class Output(InkstitchExtension):
         ThreadCatalog().match_and_apply_palette(stitch_plan, self.metadata['thread-palette'])
 
         temp_file = tempfile.NamedTemporaryFile(suffix=".%s" % self.file_extension, delete=False)
+        temp_file_name = temp_file.name
 
         # in windows, failure to close here will keep the file locked
         temp_file.close()
+        try:
+            self.settings['rotate'] = self.metadata.get("rotate_on_export", 0)
+            write_embroidery_file(temp_file_name, stitch_plan, self.document.getroot(), self.settings)
 
-        self.settings['rotate'] = self.metadata.get("rotate_on_export", 0)
-        write_embroidery_file(temp_file.name, stitch_plan, self.document.getroot(), self.settings)
+            if sys.platform == "win32":
+                import msvcrt
+                msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
 
-        if sys.platform == "win32":
-            import msvcrt
-            msvcrt.setmode(sys.stdout.fileno(), os.O_BINARY)
-
-        # inkscape will read the file contents from stdout and copy
-        # to the destination file that the user chose
-        with open(temp_file.name, "rb") as output_file:
-            sys.stdout.buffer.write(output_file.read())
-            sys.stdout.flush()
-
-        # clean up the temp file
-        os.remove(temp_file.name)
+            # inkscape will read the file contents from stdout and copy
+            # to the destination file that the user chose
+            with open(temp_file_name, "rb") as output_file:
+                sys.stdout.buffer.write(output_file.read())
+                sys.stdout.flush()
+        finally:
+            try:
+                os.remove(temp_file_name)
+            except OSError:
+                pass
 
         # don't let inkex output the SVG!
         sys.exit(0)

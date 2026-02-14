@@ -135,35 +135,52 @@ class BatchLettering(InkstitchExtension):
         # The path should be labeled as "batch lettering"
         text_positioning_path = self.svg.findone(".//*[@inkscape:label='batch lettering']")
 
-        path = tempfile.mkdtemp()
+        path = None
         files = []
-        for i, text in enumerate(texts):
-            if not text:
-                continue
-            stitch_plan, lettering_group = self.generate_stitch_plan(text, text_positioning_path)
-            for file_format in file_formats:
-                files.append(self.generate_output_file(file_format, path, text, stitch_plan, i))
+        temp_file_name = None
+        try:
+            path = tempfile.mkdtemp()
+            for i, text in enumerate(texts):
+                if not text:
+                    continue
+                stitch_plan, lettering_group = self.generate_stitch_plan(text, text_positioning_path)
+                for file_format in file_formats:
+                    files.append(self.generate_output_file(file_format, path, text, stitch_plan, i))
 
-            self.reset_document(lettering_group, text_positioning_path)
+                self.reset_document(lettering_group, text_positioning_path)
 
-        temp_file = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+            temp_file = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+            temp_file_name = temp_file.name
 
-        # in windows, failure to close here will keep the file locked
-        temp_file.close()
+            # in windows, failure to close here will keep the file locked
+            temp_file.close()
 
-        with ZipFile(temp_file.name, "w") as zip_file:
+            with ZipFile(temp_file_name, "w") as zip_file:
+                for output in files:
+                    zip_file.write(output, os.path.basename(output))
+
+            # inkscape will read the file contents from stdout and copy
+            # to the destination file that the user chose
+            with open(temp_file_name, 'rb') as output_file:
+                sys.stdout.buffer.write(output_file.read())
+        finally:
+            if temp_file_name is not None:
+                try:
+                    os.remove(temp_file_name)
+                except OSError:
+                    pass
+
             for output in files:
-                zip_file.write(output, os.path.basename(output))
+                try:
+                    os.remove(output)
+                except OSError:
+                    pass
 
-        # inkscape will read the file contents from stdout and copy
-        # to the destination file that the user chose
-        with open(temp_file.name, 'rb') as output_file:
-            sys.stdout.buffer.write(output_file.read())
-
-        os.remove(temp_file.name)
-        for output in files:
-            os.remove(output)
-        os.rmdir(path)
+            if path is not None:
+                try:
+                    os.rmdir(path)
+                except OSError:
+                    pass
 
     def reset_document(self, lettering_group, text_positioning_path):
         # reset document for the next iteration
