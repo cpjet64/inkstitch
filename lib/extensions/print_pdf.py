@@ -149,7 +149,7 @@ class PrintPreviewServer(Thread):
             self.metadata[field_name] = request.json['value']
             return "OK"
 
-        @self.app.route('/settings/<field_mame>', methods=['GET'])
+        @self.app.route('/settings/<field_name>', methods=['GET'])
         def get_field(field_name):
             return jsonify(self.metadata[field_name])
 
@@ -173,9 +173,12 @@ class PrintPreviewServer(Thread):
             catalog.apply_palette(self.stitch_plan, palette)
 
             # clear any saved color or thread names
-            for field in self.metadata:
-                if field.startswith('color-') or field.startswith('thread-'):
-                    del self.metadata[field]
+            fields_to_clear = [
+                field for field in self.metadata
+                if field.startswith('color-') or field.startswith('thread-')
+            ]
+            for field in fields_to_clear:
+                del self.metadata[field]
 
             self.metadata['thread-palette'] = name
 
