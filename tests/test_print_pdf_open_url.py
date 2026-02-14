@@ -15,6 +15,13 @@ class DummyFile:
     def close(self):
         self.closed = True
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc, tb):
+        self.close()
+        return False
+
 
 class DummyStdout:
     def fileno(self):

@@ -55,40 +55,39 @@ def save_defaults(defaults):
 def open_url(url):
     # Avoid spurious output from xdg-open.  Any output on stdout will crash
     # inkscape.
-    null = open(os.devnull, 'w')
-    old_stdout = os.dup(sys.stdout.fileno())
-    try:
-        os.dup2(null.fileno(), sys.stdout.fileno())
+    with open(os.devnull, 'w') as null:
+        old_stdout = os.dup(sys.stdout.fileno())
+        try:
+            os.dup2(null.fileno(), sys.stdout.fileno())
 
-        if getattr(sys, 'frozen', False):
+            if getattr(sys, 'frozen', False):
 
-            # PyInstaller sets LD_LIBRARY_PATH.  We need to temporarily clear it
-            # to avoid confusing xdg-open, which webbrowser will run.
+                # PyInstaller sets LD_LIBRARY_PATH.  We need to temporarily clear it
+                # to avoid confusing xdg-open, which webbrowser will run.
 
-            # The following code is adapted from PyInstaller's documentation
-            # http://pyinstaller.readthedocs.io/en/stable/runtime-information.html
+                # The following code is adapted from PyInstaller's documentation
+                # http://pyinstaller.readthedocs.io/en/stable/runtime-information.html
 
-            old_environ = dict(os.environ)  # make a copy of the environment
-            try:
-                lp_key = 'LD_LIBRARY_PATH'  # for Linux and *BSD.
-                lp_orig = os.environ.get(lp_key + '_ORIG')  # pyinstaller >= 20160820 has this
-                if lp_orig is not None:
-                    os.environ[lp_key] = lp_orig  # restore the original, unmodified value
-                else:
-                    os.environ.pop(lp_key, None)  # last resort: remove the env var
+                old_environ = dict(os.environ)  # make a copy of the environment
+                try:
+                    lp_key = 'LD_LIBRARY_PATH'  # for Linux and *BSD.
+                    lp_orig = os.environ.get(lp_key + '_ORIG')  # pyinstaller >= 20160820 has this
+                    if lp_orig is not None:
+                        os.environ[lp_key] = lp_orig  # restore the original, unmodified value
+                    else:
+                        os.environ.pop(lp_key, None)  # last resort: remove the env var
 
+                    webbrowser.open(url)
+                finally:
+                    # restore the old environ
+                    os.environ.clear()
+                    os.environ.update(old_environ)
+            else:
                 webbrowser.open(url)
-            finally:
-                # restore the old environ
-                os.environ.clear()
-                os.environ.update(old_environ)
-        else:
-            webbrowser.open(url)
-    finally:
-        # restore file descriptors
-        os.dup2(old_stdout, sys.stdout.fileno())
-        os.close(old_stdout)
-        null.close()
+        finally:
+            # restore file descriptors
+            os.dup2(old_stdout, sys.stdout.fileno())
+            os.close(old_stdout)
 
 
 class PrintPreviewServer(Thread):
