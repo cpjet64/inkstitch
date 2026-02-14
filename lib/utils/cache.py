@@ -18,11 +18,12 @@ from functools import lru_cache
 
 # See https://mypy.readthedocs.io/en/stable/generics.html#declaring-decorators
 F = TypeVar('F', bound=Callable[..., Any])
+METHOD_CACHE_SIZE = 1024
 
 
 # simplify use of lru_cache decorator
 def cache(func: F) -> F:
-    return cast(F, lru_cache(maxsize=None)(func))
+    return cast(F, lru_cache(maxsize=METHOD_CACHE_SIZE)(func))
 
 
 __stitch_plan_cache = None
