@@ -385,7 +385,7 @@ class TartanSvgGroup:
         reverse = Point(FillStitch(path_element).to_stitch_groups(None)[0].stitches[0])
         path_element.set('inkstitch:flip', True)
         reverse_flip = Point(FillStitch(path_element).to_stitch_groups(None)[0].stitches[0])
-        path_element.pop('inkstitch:revers')
+        path_element.pop('inkstitch:reverse')
         flip = Point(FillStitch(path_element).to_stitch_groups(None)[0].stitches[0])
         start_positions = [blank.distance(start), reverse.distance(start), reverse_flip.distance(start), flip.distance(start)]
         best_setting = start_positions.index(min(start_positions))
