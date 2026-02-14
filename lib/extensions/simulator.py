@@ -13,8 +13,8 @@ from .base import InkstitchExtension
 
 
 class Simulator(InkstitchExtension):
-    def __init__(self):
-        InkstitchExtension.__init__(self)
+    def __init__(self, *args, **kwargs):
+        InkstitchExtension.__init__(self, *args, **kwargs)
 
     def effect(self):
         if not self.get_elements():
