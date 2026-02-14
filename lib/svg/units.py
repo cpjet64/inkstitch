@@ -99,7 +99,10 @@ def get_viewbox(svg):
     viewbox = svg.get('viewBox')
     if viewbox is None:
         viewbox = "0 0 0 0"
-    return viewbox.strip().replace(',', ' ').split()
+    values = viewbox.strip().replace(',', ' ').split()
+    if len(values) < 4:
+        values.extend(["0"] * (4 - len(values)))
+    return values[:4]
 
 
 @cache
