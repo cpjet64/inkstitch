@@ -105,12 +105,14 @@ def _apply_bean_stitch_and_repeats(stitches, repeats, bean_stitch_repeats):
         stitches = bean_stitch(stitches, bean_stitch_repeats, ['auto_fill_travel'])
 
     if repeats:
+        base_stitches = list(stitches)
+        reversed_base_stitches = list(reversed(base_stitches))
         for i in range(1, repeats):
             if i % 2 == 1:
                 # reverse every other pass
-                stitches.extend(stitches[::-1])
+                stitches.extend(reversed_base_stitches)
             else:
-                stitches.extend(stitches)
+                stitches.extend(base_stitches)
 
     return stitches
 
