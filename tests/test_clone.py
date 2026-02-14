@@ -134,6 +134,7 @@ class CloneElementTest(TestCase):
         original_transform_init = Transform.__init__
 
         def strict_transform_init(transform_self, *args, **kwargs):
+            # Guard against accidental JS-style string interpolation in transform strings.
             if args and isinstance(args[0], str):
                 self.assertNotIn("$", args[0])
             return original_transform_init(transform_self, *args, **kwargs)

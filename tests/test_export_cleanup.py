@@ -9,6 +9,8 @@ from lib.extensions.zip import Zip
 
 
 class DummyTempFile:
+    """Simple temp-file stub used to drive exporter cleanup paths."""
+
     def __init__(self, name):
         self.name = name
 
@@ -17,6 +19,8 @@ class DummyTempFile:
 
 
 class RaisingZipFile:
+    """ZipFile stand-in that fails on enter to simulate archive errors."""
+
     def __init__(self, *args, **kwargs):
         pass
 

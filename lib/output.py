@@ -54,6 +54,7 @@ def write_embroidery_file(file_path, stitch_plan, svg, settings=None):
     # convert from pixels to millimeters
     # also multiply by 10 to get tenths of a millimeter as required by pystitch
     scale = 10 / PIXELS_PER_MM
+    # Keep caller-provided settings immutable across exports.
     writer_settings = dict(settings or {})
 
     origin = get_origin(svg, stitch_plan.bounding_box)

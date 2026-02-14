@@ -17,7 +17,7 @@ def test_palette_default_stripes_are_not_shared_between_instances():
 
 def test_update_code_asymmetric_uses_serialized_code_string():
     palette = Palette(
-        palette_stripes=[[ _stripe(width=4.0, color="#112233") ], []],
+        palette_stripes=[[_stripe(width=4.0, color="#112233")], []],
         symmetry=False,
         equal_warp_weft=True,
     )
