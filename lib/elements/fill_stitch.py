@@ -1342,7 +1342,7 @@ class FillStitch(EmbroideryElement):
                 yield BorderCrossWarning((x, y))
 
         for shape in self.shape.geoms:
-            if self.shape.area < 20:
+            if shape.area < 20:
                 label = self.node.get(INKSCAPE_LABEL) or self.node.get("id")
                 yield SmallShapeWarning(shape.centroid, label)
 
