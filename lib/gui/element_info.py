@@ -87,9 +87,12 @@ class ElementInfoFrame(wx.Frame):
 
     def on_copy(self, event):
         if wx.TheClipboard.Open():
-            text = self.export_txt
-            data_object = wx.TextDataObject(text)
-            wx.TheClipboard.SetData(data_object)
+            try:
+                text = self.export_txt
+                data_object = wx.TextDataObject(text)
+                wx.TheClipboard.SetData(data_object)
+            finally:
+                wx.TheClipboard.Close()
 
     def _fill_info_list(self):
         for item in self.list_items:
