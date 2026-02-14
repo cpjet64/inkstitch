@@ -216,7 +216,9 @@ class LetteringOrganizeGlyphs(InkstitchExtension):
                 return True
         return False
 
-    def _create_and_fill_group(self, unicode_categories, excepting=[], adding=[], also_composed=False):
+    def _create_and_fill_group(self, unicode_categories, excepting=None, adding=None, also_composed=False):
+        excepting = list(excepting or ())
+        adding = list(adding or ())
 
         group_name = self._category_name[unicode_categories[0]]
         new_group = self._create_empty_group(group_name)
