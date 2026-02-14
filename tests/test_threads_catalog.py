@@ -1,4 +1,4 @@
-from unittest.mock import Mock, call
+from unittest.mock import Mock, call, patch
 
 from lib.threads.catalog import _ThreadCatalog
 
@@ -15,6 +15,35 @@ class DummyColor:
 class DummyColorBlock:
     def __init__(self, color):
         self.color = color
+
+
+def test_load_palettes_parses_each_valid_palette_once():
+    catalog = object.__new__(_ThreadCatalog)
+    catalog.palettes = []
+    valid_palette = Mock(is_gimp_palette=True)
+
+    with patch("lib.threads.catalog.glob", return_value=["/tmp/InkStitch-test.gpl"]), patch(
+        "lib.threads.catalog.ThreadPalette",
+        return_value=valid_palette,
+    ) as thread_palette:
+        catalog.load_palettes(["/tmp"])
+
+    assert catalog.palettes == [valid_palette]
+    assert thread_palette.call_count == 1
+
+
+def test_load_palettes_skips_non_gimp_palettes():
+    catalog = object.__new__(_ThreadCatalog)
+    catalog.palettes = []
+    invalid_palette = Mock(is_gimp_palette=False)
+
+    with patch("lib.threads.catalog.glob", return_value=["/tmp/InkStitch-bad.gpl"]), patch(
+        "lib.threads.catalog.ThreadPalette",
+        return_value=invalid_palette,
+    ):
+        catalog.load_palettes(["/tmp"])
+
+    assert catalog.palettes == []
 
 
 def test_apply_palette_returns_early_for_none_palette():
