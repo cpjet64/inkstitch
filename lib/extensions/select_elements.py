@@ -189,7 +189,7 @@ class SelectElements(InkstitchExtension):
             'autosatin-underpath': (
                 element_id.startswith('autosatinrun') or  # legacy search
                 element.node.get('inkstitch:path_type') == 'satin-underpath')}
-        return conditions[self.options.running_stitch_condition]
+        return conditions.get(self.options.running_stitch_condition, False)
 
     def _bean_stitch_repeats(self, element):
         repeats = element.node.get('inkstitch:bean_stitch_repeats', '0')
@@ -197,7 +197,7 @@ class SelectElements(InkstitchExtension):
 
     def _select_fill_underlay(self, element):
         underlay = {'all': True, 'no': not element.fill_underlay, 'yes': element.fill_underlay}
-        return underlay[self.options.fill_underlay]
+        return underlay.get(self.options.fill_underlay, False)
 
     def _select_satin(self, element):
         select = False
@@ -223,14 +223,14 @@ class SelectElements(InkstitchExtension):
         underlay['zigzag'] = element.zigzag_underlay
         underlay['no'] = not any(underlay.values())
         underlay['all'] = True
-        return underlay[self.options.satin_underlay]
+        return underlay.get(self.options.satin_underlay, False)
 
     def _select_rung_count(self, element):
         rung_count = {'all': None, 'zero': None, 'two': None}
         rung_count['zero'] = len(element.paths) == 2
         rung_count['two'] = len(element.paths) == 4
         rung_count['all'] = True
-        return rung_count[self.options.rung_count]
+        return rung_count.get(self.options.rung_count, False)
 
 
 if __name__ == '__main__':
