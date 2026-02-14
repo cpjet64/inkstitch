@@ -104,3 +104,11 @@ def test_rindex_does_not_mutate_list_on_missing_value():
         cross_stitch_module.rindex(values, 99)
 
     assert values == [1, 2, 3, 2]
+
+
+def test_insert_cycle_at_node_returns_original_cycle_when_node_missing():
+    original_cycle = ["a", "b", "c"]
+
+    result = cross_stitch_module.insert_cycle_at_node(original_cycle, ["x", "y"], "missing")
+
+    assert result == original_cycle

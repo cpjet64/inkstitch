@@ -474,6 +474,7 @@ def insert_cycle_at_node(cycle_to_increase, cycle_to_insert, node):
         index = rindex(cycle_to_increase, node)
         new_cycle = cycle_to_increase[:index] + cycle_to_insert + cycle_to_increase[index+1:]
         return new_cycle
+    return cycle_to_increase
 
 
 def _cycles_to_stitches(eulerian_cycles, max_stitch_length):
