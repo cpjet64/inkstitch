@@ -50,10 +50,11 @@ def jump_to_stop_point(pattern, svg):
         pattern.add_stitch_absolute(pystitch.JUMP, stop_position.point.x, stop_position.point.y)
 
 
-def write_embroidery_file(file_path, stitch_plan, svg, settings={}):
+def write_embroidery_file(file_path, stitch_plan, svg, settings=None):
     # convert from pixels to millimeters
     # also multiply by 10 to get tenths of a millimeter as required by pystitch
     scale = 10 / PIXELS_PER_MM
+    writer_settings = dict(settings or {})
 
     origin = get_origin(svg, stitch_plan.bounding_box)
     # origin = origin * scale
@@ -76,7 +77,7 @@ def write_embroidery_file(file_path, stitch_plan, svg, settings={}):
 
     pattern.add_stitch_absolute(pystitch.END, stitch.x, stitch.y)
 
-    settings.update({
+    writer_settings.update({
         # correct for the origin
         "translate": -origin,
 
@@ -93,18 +94,18 @@ def write_embroidery_file(file_path, stitch_plan, svg, settings={}):
     })
 
     if not file_path.endswith(('.col', '.edr', '.inf')):
-        settings['encode'] = True
+        writer_settings['encode'] = True
 
     if file_path.endswith('.csv'):
         # Special treatment for CSV: instruct pystitch not to do any post-
         # processing.  This will allow the user to match up stitch numbers seen
         # in the simulator with commands in the CSV.
-        settings['max_stitch'] = float('inf')
-        settings['max_jump'] = float('inf')
-        settings['explicit_trim'] = False
+        writer_settings['max_stitch'] = float('inf')
+        writer_settings['max_jump'] = float('inf')
+        writer_settings['explicit_trim'] = False
 
     try:
-        pystitch.write(pattern, file_path, settings)
+        pystitch.write(pattern, file_path, writer_settings)
     except IOError as e:
         # L10N low-level file error.  %(error)s is (hopefully?) translated by
         # the user's system automatically.
@@ -112,8 +113,9 @@ def write_embroidery_file(file_path, stitch_plan, svg, settings={}):
         inkex.errormsg(msg)
         sys.exit(1)
     except TooManyColorChangesError as e:
-        num_color_changes = re.search("d+", str(e)).group()
-        msg = _("Couldn't save embrodiery file.")
+        color_changes_match = re.search(r"\d+", str(e))
+        num_color_changes = color_changes_match.group() if color_changes_match else "?"
+        msg = _("Couldn't save embroidery file.")
         msg += '\n\n'
         msg += _("There are {num_color_changes} color changes in your design. This is way too many.").format(num_color_changes=num_color_changes)
         msg += '\n'
