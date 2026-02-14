@@ -58,11 +58,13 @@ class AutoRun(CommandsExtension):
         if not self.svg.selection:
             # L10N auto-route running stitch columns extension
             errormsg(_("Please select one or more stroke elements."))
+            return []
 
         self.get_elements()
         elements = [element for element in self.elements if isinstance(element, Stroke)]
         if len(elements) == 0:
             errormsg(_("Please select at least one stroke element."))
+            return []
 
         return elements
 
