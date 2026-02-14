@@ -1361,7 +1361,6 @@ class FillStitch(EmbroideryElement):
                 yield MultipleGuideLineWarning(self.shape.centroid)
             elif guide_lines[0].disjoint(self.shape):
                 yield DisjointGuideLineWarning(self.shape.centroid)
-            return None
 
         # linear gradient fill
         if self.fill_method == 'linear_gradient_fill' and self.gradient is None:
