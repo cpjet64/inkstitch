@@ -209,8 +209,10 @@ class PrintPreviewServer(Thread):
             return "OK"
 
     def stop(self):
-        self.flask_server.shutdown()
-        self.server_thread.join()
+        if self.flask_server is not None:
+            self.flask_server.shutdown()
+        if self.server_thread is not None:
+            self.server_thread.join()
 
     def apply_palette(self, name):
         catalog = ThreadCatalog()
