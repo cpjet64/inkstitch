@@ -75,11 +75,7 @@ class InkStitchMetadata(MutableMapping):
                 yield strip_namespace(child.tag)
 
     def __len__(self):
-        i = 0
-        for i, item in enumerate(self):
-            pass
-
-        return i + 1
+        return sum(1 for _ in self)
 
     def __json__(self):
         return dict(self)
