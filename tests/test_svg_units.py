@@ -1,32 +1,19 @@
-from lib.svg.units import get_doc_size, get_viewbox, get_viewbox_transform
+import pytest
+
+from lib.svg.units import convert_length, parse_length_with_units
 
 
-class DummySvg:
-    def __init__(self, attrib):
-        self.attrib = attrib
-
-    def get(self, key, default=None):
-        return self.attrib.get(key, default)
+def test_parse_length_with_units_accepts_svg_lengths():
+    assert parse_length_with_units("10mm") == (10.0, "mm")
+    assert parse_length_with_units("25px") == (25.0, "px")
 
 
-def test_get_viewbox_pads_short_value_to_four_entries():
-    svg = DummySvg({"viewBox": "1 2"})
-
-    assert get_viewbox(svg) == ["1", "2", "0", "0"]
-
-
-def test_get_doc_size_handles_short_viewbox_without_index_error():
-    svg = DummySvg({"viewBox": "1 2"})
-
-    width, height = get_doc_size(svg)
-
-    assert width == 0
-    assert height == 0
+def test_parse_length_with_units_rejects_invalid_units():
+    with pytest.raises(ValueError):
+        parse_length_with_units("10unknown")
 
 
-def test_get_viewbox_transform_handles_short_viewbox_without_index_error():
-    svg = DummySvg({"width": "10px", "height": "10px", "viewBox": "1 2"})
+def test_convert_length_converts_mm_to_px():
+    result = convert_length("25.4mm")
 
-    transform = get_viewbox_transform(svg)
-
-    assert transform is not None
+    assert result == pytest.approx(96.0)

@@ -12,86 +12,21 @@ from ..utils import cache
 PIXELS_PER_MM = 96 / 25.4
 
 
-def parse_length_with_units(str):
-    value, unit = inkex.units.parse_unit(str)
+def parse_length_with_units(length):
+    parsed = inkex.units.parse_unit(length)
+    if parsed is None:
+        raise ValueError(_("parseLengthWithUnits: unknown unit %s") % length)
+
+    value, unit = parsed
     if not unit:
-        raise ValueError(_("parseLengthWithUnits: unknown unit %s") % str)
+        raise ValueError(_("parseLengthWithUnits: unknown unit %s") % length)
     return value, unit
-
-    """
-    '''
-    Parse an SVG value which may or may not have units attached
-    This version is greatly simplified in that it only allows: no units,
-    units of px, mm, and %.  Everything else, it returns None for.
-    There is a more general routine to consider in scour.py if more
-    generality is ever needed.
-    '''
-
-    # cribbed from inkscape-silhouette
-
-    u = 'px'
-    s = str.strip()
-    if s[-2:] == 'px':
-        s = s[:-2]
-    elif s[-2:] == 'mm':
-        u = 'mm'
-        s = s[:-2]
-    elif s[-2:] == 'pt':
-        u = 'pt'
-        s = s[:-2]
-    elif s[-2:] == 'pc':
-        u = 'pc'
-        s = s[:-2]
-    elif s[-2:] == 'cm':
-        u = 'cm'
-        s = s[:-2]
-    elif s[-2:] == 'in':
-        u = 'in'
-        s = s[:-2]
-    elif s[-1:] == '%':
-        u = '%'
-        s = s[:-1]
-    try:
-        v = float(s)
-    except BaseException:
-        raise ValueError(_("parseLengthWithUnits: unknown unit %s") % s)
-
-    return v, u
-    """
 
 
 def convert_length(length):
     value, units = parse_length_with_units(length)
 
     return inkex.units.convert_unit(str(value) + units, 'px')
-
-    """
-    if not units or units == "px":
-        return value
-
-    if units == 'pt':
-        value /= 72
-        units = 'in'
-
-    if units == 'pc':
-        value /= 6
-        units = 'in'
-
-    if units == 'cm':
-        value *= 10
-        units = 'mm'
-
-    if units == 'mm':
-        value /= 25.4
-        units = 'in'
-
-    if units == 'in':
-        # modern versions of Inkscape use CSS's 96 pixels per inch.  When you
-        # open an old document, inkscape will add a viewbox for you.
-        return value * 96
-
-    raise ValueError(_("Unknown unit: %s") % units)
-    """
 
 
 @cache
