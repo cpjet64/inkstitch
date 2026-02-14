@@ -863,7 +863,7 @@ class Stroke(EmbroideryElement):
                 num_subsections = ceil(dist / self.max_stitch_length)
                 additional_points = [
                     Point(coord.x, coord.y)
-                    for coord in [line.interpolate((i / num_subsections), normalized=True) for i in range(1, num_subsections + 1)]
+                    for coord in [line.interpolate((i / num_subsections), normalized=True) for i in range(1, num_subsections)]
                 ]
                 max_len_path.extend(additional_points)
             max_len_path.append(points[1])
