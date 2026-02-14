@@ -51,7 +51,7 @@ class Install(InkstitchExtension):
             copy_files(glob(os.path.join(src_dir, "*")), path)
             return True
         except IOError as error:
-            self.install_error_message(_("Could not install color palettes. Please file an issue on"), error)
+            self.install_error_message(_("Could not install symbol libraries. Please file an issue on"), error)
             return False
 
     def install_success_message(self):
