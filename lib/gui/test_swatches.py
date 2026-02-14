@@ -17,7 +17,6 @@ class GenerateSwatchesFrame(wx.Frame):
     def __init__(self, *args, **kwargs):
         self.extension = kwargs.pop("extension")
         self.choices = kwargs.pop("choices")
-        wx.Frame.__init__(self, *args, **kwargs)
         wx.Frame.__init__(self, None, wx.ID_ANY, _("Generate Swatches"), *args, **kwargs)
 
         self.SetWindowStyle(wx.FRAME_FLOAT_ON_PARENT | wx.DEFAULT_FRAME_STYLE)
