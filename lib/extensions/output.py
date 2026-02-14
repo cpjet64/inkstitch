@@ -17,15 +17,22 @@ class Output(InkstitchExtension):
     def __init__(self, *args, **kwargs):
         InkstitchExtension.__init__(self, *args, **kwargs)
 
-    def parse_arguments(self, args=sys.argv[1:]):
+    def parse_arguments(self, args=None):
         # inkex's option parsing can't handle arbitrary command line arguments
         # that may be passed for a given output format, so we'll just parse the
         # args ourselves. :P
+        if args is None:
+            args = sys.argv[1:]
+
         self.settings = {}
         extra_args = []
         for arg in args:
             if arg.startswith('--') and not arg.startswith('--id='):
-                name, value = arg[2:].split('=')
+                if '=' not in arg:
+                    extra_args.append(arg)
+                    continue
+
+                name, value = arg[2:].split('=', 1)
 
                 try:
                     value = float(value)
