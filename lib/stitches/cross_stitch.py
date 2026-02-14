@@ -314,10 +314,10 @@ def _build_double_row_tour(subcrosses, starting_corner, nb_repeats, remove=True)
 
 def find_index_subgraph(subgraphs, crosses, point):
     corner = get_corner(point, crosses)
-    index = 0
-    while corner not in list(subgraphs[index].nodes):
-        index += 1
-    return corner, index
+    for index, subgraph in enumerate(subgraphs):
+        if corner in list(subgraph.nodes):
+            return corner, index
+    raise ValueError(f"Corner {corner} not found in any subgraph")
 
 
 def is_cross_in_subgraph(cross, subgraph):

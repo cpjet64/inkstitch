@@ -112,3 +112,27 @@ def test_insert_cycle_at_node_returns_original_cycle_when_node_missing():
     result = cross_stitch_module.insert_cycle_at_node(original_cycle, ["x", "y"], "missing")
 
     assert result == original_cycle
+
+
+def test_find_index_subgraph_returns_matching_index(monkeypatch):
+    first = nx.Graph()
+    first.add_node("a")
+    second = nx.Graph()
+    second.add_node("b")
+
+    monkeypatch.setattr(cross_stitch_module, "get_corner", lambda point, crosses: "b")
+
+    corner, index = cross_stitch_module.find_index_subgraph([first, second], [], (0, 0))
+
+    assert corner == "b"
+    assert index == 1
+
+
+def test_find_index_subgraph_raises_clear_error_when_not_found(monkeypatch):
+    graph = nx.Graph()
+    graph.add_node("a")
+
+    monkeypatch.setattr(cross_stitch_module, "get_corner", lambda point, crosses: "missing")
+
+    with pytest.raises(ValueError, match="not found in any subgraph"):
+        cross_stitch_module.find_index_subgraph([graph], [], (0, 0))
