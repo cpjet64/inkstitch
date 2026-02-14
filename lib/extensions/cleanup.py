@@ -65,7 +65,7 @@ class Cleanup(InkstitchExtension):
             self._remove()
 
     def _dry_run(self):
-        errormsg(_("%s elements to remove:" % len(self.elements_to_remove)))
+        errormsg(_("%s elements to remove:") % len(self.elements_to_remove))
         for element in self.elements_to_remove:
             if element.label:
                 errormsg(f" - {element.label} (id: {element.get_id()})")
@@ -73,7 +73,7 @@ class Cleanup(InkstitchExtension):
                 errormsg(f" - {element.get_id()}")
 
         errormsg("\n")
-        errormsg(_("%s groups/layers to remove:" % len(self.groups_to_remove)))
+        errormsg(_("%s groups/layers to remove:") % len(self.groups_to_remove))
         for group in self.groups_to_remove:
             errormsg(f" - {group.label}: {group.get_id()}")
 
