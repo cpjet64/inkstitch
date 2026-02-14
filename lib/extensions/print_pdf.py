@@ -149,7 +149,8 @@ class PrintPreviewServer(Thread):
 
         @self.app.route('/settings/<field_name>', methods=['POST'])
         def set_field(field_name):
-            self.metadata[field_name] = request.json['value']
+            if not self.set_metadata_field(field_name, request.get_json(silent=True)):
+                return _("Missing value."), 400
             return "OK"
 
         @self.app.route('/settings/<field_name>', methods=['GET'])
@@ -165,7 +166,8 @@ class PrintPreviewServer(Thread):
 
         @self.app.route('/defaults', methods=['POST'])
         def set_defaults():
-            save_defaults(request.json['value'])
+            if not self.set_defaults(request.get_json(silent=True)):
+                return _("Missing value."), 400
             return "OK"
 
         @self.app.route('/palette', methods=['POST'])
@@ -231,6 +233,18 @@ class PrintPreviewServer(Thread):
             del self.metadata[field]
 
         self.metadata['thread-palette'] = name
+        return True
+
+    def set_metadata_field(self, field_name, payload):
+        if not isinstance(payload, dict) or "value" not in payload:
+            return False
+        self.metadata[field_name] = payload["value"]
+        return True
+
+    def set_defaults(self, payload):
+        if not isinstance(payload, dict) or "value" not in payload:
+            return False
+        save_defaults(payload["value"])
         return True
 
     def watch(self):
