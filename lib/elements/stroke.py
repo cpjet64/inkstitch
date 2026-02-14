@@ -991,7 +991,7 @@ class Stroke(EmbroideryElement):
         if self.get_boolean_param("satin_column", False) and self.stroke_width <= 0.3 * PIXELS_PER_MM:
             yield TooNarrowSatinWarning(self._representative_point())
         # ripple stitch warnings
-        if self.stroke_method == 1:
+        if self.stroke_method == "ripple_stitch":
             guide_lines = get_marker_elements(self.node, "guide-line", False, True, True)
             if sum(len(x) for x in guide_lines.values()) > 1:
                 yield MultipleGuideLineWarning(self._representative_point())
