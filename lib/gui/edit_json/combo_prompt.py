@@ -2,7 +2,7 @@ import wx
 
 
 class PromptingComboBox(wx.ComboBox):
-    def __init__(self, parent, choices=[], style=0, **kwargs):
+    def __init__(self, parent, choices=None, style=0, **kwargs):
         if choices is None:
             choices = []
         wx.ComboBox.__init__(self, parent, wx.ID_ANY, style=style, choices=choices, **kwargs)
