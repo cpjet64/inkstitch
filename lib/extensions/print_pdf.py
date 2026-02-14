@@ -237,7 +237,7 @@ class PrintPreviewServer(Thread):
                     debug.log("watcher thread: timed out, stopping")
                     self.stop()
                     break
-        except BaseException:
+        except Exception:
             # seems like sometimes this thread blows up during shutdown
             debug.log(f"exception in watcher {sys.exc_info()}")
             pass
