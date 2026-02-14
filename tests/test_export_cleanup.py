@@ -74,6 +74,9 @@ def test_output_effect_cleans_temp_file_when_export_raises():
 def test_zip_effect_cleans_generated_files_when_zipping_fails():
     extension = object.__new__(Zip)
     extension.options = SimpleNamespace(x_repeats=1, y_repeats=1, custom_file_name="")
+    extension.formats = ["dst", "pes"]
+    extension.options.dst = True
+    extension.options.pes = True
     extension.elements = []
     extension.get_elements = lambda: True
     extension.get_inkstitch_metadata = lambda: {
