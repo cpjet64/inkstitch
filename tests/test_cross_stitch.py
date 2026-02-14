@@ -1,6 +1,7 @@
 import importlib
 
 import networkx as nx
+import pytest
 
 cross_stitch_module = importlib.import_module("lib.stitches.cross_stitch")
 
@@ -85,3 +86,21 @@ def test_build_eulerian_cycles_uses_ending_corner_for_last_subgraph(monkeypatch)
 
     assert seen_starting_corners == ["start-corner", "end-corner"]
     assert cycles == [["start-corner"], ["end-corner"]]
+
+
+def test_rindex_does_not_mutate_list_on_success():
+    values = [1, 2, 3, 2]
+
+    index = cross_stitch_module.rindex(values, 2)
+
+    assert index == 3
+    assert values == [1, 2, 3, 2]
+
+
+def test_rindex_does_not_mutate_list_on_missing_value():
+    values = [1, 2, 3, 2]
+
+    with pytest.raises(ValueError):
+        cross_stitch_module.rindex(values, 99)
+
+    assert values == [1, 2, 3, 2]

@@ -466,10 +466,7 @@ def remove_crosses(crosses, covered_crosses):
 
 
 def rindex(lst, value):
-    lst.reverse()
-    i = lst.index(value)
-    lst.reverse()
-    return len(lst) - i - 1
+    return len(lst) - 1 - lst[::-1].index(value)
 
 
 def insert_cycle_at_node(cycle_to_increase, cycle_to_insert, node):
