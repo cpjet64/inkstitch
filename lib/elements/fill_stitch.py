@@ -1326,20 +1326,24 @@ class FillStitch(EmbroideryElement):
         if not self.shape.is_valid:
             why = explain_validity(self.shape)
             match = re.match(r"(?P<message>.+)\[(?P<x>.+)\s(?P<y>.+)\]", why)
-            assert match is not None, f"Could not parse validity message '{why}'"
-            message, x, y = match.groups()
+            if match is None:
+                yield InvalidShapeError(self.shape.representative_point())
+                return
+            _, x, y = match.groups()
             yield InvalidShapeError((x, y))
 
     def validation_warnings(self):  # noqa: C901
         if not self.original_shape.is_valid:
             why = explain_validity(self.original_shape)
             match = re.match(r"(?P<message>.+)\[(?P<x>.+)\s(?P<y>.+)\]", why)
-            assert match is not None, f"Could not parse validity message '{why}'"
-            message, x, y = match.groups()
-            if "Hole lies outside shell" in message:
-                yield UnconnectedWarning((x, y))
+            if match is None:
+                yield BorderCrossWarning(self.original_shape.representative_point())
             else:
-                yield BorderCrossWarning((x, y))
+                message, x, y = match.groups()
+                if "Hole lies outside shell" in message:
+                    yield UnconnectedWarning((x, y))
+                else:
+                    yield BorderCrossWarning((x, y))
 
         for shape in self.shape.geoms:
             if shape.area < 20:
