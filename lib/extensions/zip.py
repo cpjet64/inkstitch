@@ -72,48 +72,34 @@ class Zip(InkstitchExtension):
             stitch_plan = self._make_offsets(stitch_plan)
 
         base_file_name = self._get_file_name()
-        path = None
-        files = []
         temp_file_name = None
 
         try:
-            path = tempfile.mkdtemp()
+            with tempfile.TemporaryDirectory() as path:
+                files = self.generate_output_files(stitch_plan, path, base_file_name)
 
-            files = self.generate_output_files(stitch_plan, path, base_file_name)
+                if not files:
+                    errormsg(_("No embroidery file formats selected."))
+                    return
 
-            if not files:
-                errormsg(_("No embroidery file formats selected."))
+                temp_file = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+                temp_file_name = temp_file.name
 
-            temp_file = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
-            temp_file_name = temp_file.name
+                # in windows, failure to close here will keep the file locked
+                temp_file.close()
 
-            # in windows, failure to close here will keep the file locked
-            temp_file.close()
+                with ZipFile(temp_file_name, "w") as zip_file:
+                    for file in files:
+                        zip_file.write(file, os.path.basename(file))
 
-            with ZipFile(temp_file_name, "w") as zip_file:
-                for file in files:
-                    zip_file.write(file, os.path.basename(file))
-
-            # inkscape will read the file contents from stdout and copy
-            # to the destination file that the user chose
-            with open(temp_file_name, 'rb') as output_file:
-                sys.stdout.buffer.write(output_file.read())
+                # inkscape will read the file contents from stdout and copy
+                # to the destination file that the user chose
+                with open(temp_file_name, 'rb') as output_file:
+                    sys.stdout.buffer.write(output_file.read())
         finally:
             if temp_file_name is not None:
                 try:
                     os.remove(temp_file_name)
-                except OSError:
-                    pass
-
-            for file in files:
-                try:
-                    os.remove(file)
-                except OSError:
-                    pass
-
-            if path is not None:
-                try:
-                    os.rmdir(path)
                 except OSError:
                     pass
 
