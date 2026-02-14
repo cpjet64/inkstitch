@@ -135,50 +135,41 @@ class BatchLettering(InkstitchExtension):
         # The path should be labeled as "batch lettering"
         text_positioning_path = self.svg.findone(".//*[@inkscape:label='batch lettering']")
 
-        path = None
-        files = []
         temp_file_name = None
         try:
-            path = tempfile.mkdtemp()
-            for i, text in enumerate(texts):
-                if not text:
-                    continue
-                stitch_plan, lettering_group = self.generate_stitch_plan(text, text_positioning_path)
-                for file_format in file_formats:
-                    files.append(self.generate_output_file(file_format, path, text, stitch_plan, i))
+            with tempfile.TemporaryDirectory() as path:
+                files = []
+                for i, text in enumerate(texts):
+                    if not text:
+                        continue
+                    stitch_plan, lettering_group = self.generate_stitch_plan(text, text_positioning_path)
+                    for file_format in file_formats:
+                        files.append(self.generate_output_file(file_format, path, text, stitch_plan, i))
 
-                self.reset_document(lettering_group, text_positioning_path)
+                    self.reset_document(lettering_group, text_positioning_path)
 
-            temp_file = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
-            temp_file_name = temp_file.name
+                if not files:
+                    errormsg(_("No output files could be generated from the provided text."))
+                    return
 
-            # in windows, failure to close here will keep the file locked
-            temp_file.close()
+                temp_file = tempfile.NamedTemporaryFile(suffix=".zip", delete=False)
+                temp_file_name = temp_file.name
 
-            with ZipFile(temp_file_name, "w") as zip_file:
-                for output in files:
-                    zip_file.write(output, os.path.basename(output))
+                # in windows, failure to close here will keep the file locked
+                temp_file.close()
 
-            # inkscape will read the file contents from stdout and copy
-            # to the destination file that the user chose
-            with open(temp_file_name, 'rb') as output_file:
-                sys.stdout.buffer.write(output_file.read())
+                with ZipFile(temp_file_name, "w") as zip_file:
+                    for output in files:
+                        zip_file.write(output, os.path.basename(output))
+
+                # inkscape will read the file contents from stdout and copy
+                # to the destination file that the user chose
+                with open(temp_file_name, 'rb') as output_file:
+                    sys.stdout.buffer.write(output_file.read())
         finally:
             if temp_file_name is not None:
                 try:
                     os.remove(temp_file_name)
-                except OSError:
-                    pass
-
-            for output in files:
-                try:
-                    os.remove(output)
-                except OSError:
-                    pass
-
-            if path is not None:
-                try:
-                    os.rmdir(path)
                 except OSError:
                     pass
 
