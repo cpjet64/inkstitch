@@ -60,6 +60,9 @@ class Zip(InkstitchExtension):
     def effect(self):
         if not self.get_elements():
             return
+        if not any(getattr(self.options, format) for format in self.formats):
+            errormsg(_("No embroidery file formats selected."))
+            return
 
         self.metadata = self.get_inkstitch_metadata()
         collapse_len = self.metadata['collapse_len_mm']
