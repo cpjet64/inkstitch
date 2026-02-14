@@ -243,7 +243,7 @@ class Clone(EmbroideryElement):
             if self.clone_fill_angle is None:
                 element_angle = float(node.get(INKSTITCH_ATTRIBS['angle'], 0))
                 # We have to negate the angle because SVG/Inkscape's definition of rotation is clockwise, while Inkstitch uses counter-clockwise
-                fill_vector = (angle_transform @ Transform(f"rotate(${-element_angle})")).apply_to_point((1, 0))
+                fill_vector = (angle_transform @ Transform(f"rotate({-element_angle})")).apply_to_point((1, 0))
                 # Same reason for negation here.
                 element_angle = -degrees(fill_vector.angle or 0)  # Fallback to 0 if an insane transform is used.
             else:  # If clone_fill_angle is specified, override the angle instead.

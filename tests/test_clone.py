@@ -1,5 +1,6 @@
 from math import sqrt
 from typing import Optional
+from unittest.mock import patch
 
 from inkex import (Circle, Group, Rectangle, SvgDocumentElement, TextElement,
                    Transform, Use)
@@ -117,6 +118,30 @@ class CloneElementTest(TestCase):
         with clone.clone_elements() as elements:
             self.assertEqual(len(elements), element_count())
             self.assertAngleAlmostEqual(element_fill_angle(elements[0]), 10)
+
+    def test_angle_rotation_uses_valid_transform_string(self) -> None:
+        root: SvgDocumentElement = svg()
+        rect = root.add(Rectangle(attrib={
+            "width": "10",
+            "height": "10",
+            INKSTITCH_ATTRIBS["angle"]: "30"
+        }))
+        use = root.add(Use())
+        use.href = rect
+        use.set('transform', Transform().add_rotate(20))
+
+        clone = Clone(use)
+        original_transform_init = Transform.__init__
+
+        def strict_transform_init(transform_self, *args, **kwargs):
+            if args and isinstance(args[0], str):
+                self.assertNotIn("$", args[0])
+            return original_transform_init(transform_self, *args, **kwargs)
+
+        with patch.object(Transform, "__init__", strict_transform_init):
+            with clone.clone_elements() as elements:
+                self.assertEqual(len(elements), element_count())
+                self.assertAngleAlmostEqual(element_fill_angle(elements[0]), 10)
 
     def test_angle_flipped(self) -> None:
         root: SvgDocumentElement = svg()
