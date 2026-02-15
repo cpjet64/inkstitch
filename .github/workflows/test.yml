@@ -46,33 +46,6 @@ defaults:
 permissions:
   contents: read
 
-env:
-  PR_SMOKE_MATRIX: >-
-    [
-      {"os":"ubuntu-22.04","python-version":"3.9"},
-      {"os":"ubuntu-22.04","python-version":"3.13"},
-      {"os":"windows-latest","python-version":"3.13"},
-      {"os":"macos-latest","python-version":"3.13"}
-    ]
-  FULL_SUPPORTED_MATRIX: >-
-    [
-      {"os":"ubuntu-22.04","python-version":"3.9"},
-      {"os":"ubuntu-22.04","python-version":"3.10"},
-      {"os":"ubuntu-22.04","python-version":"3.11"},
-      {"os":"ubuntu-22.04","python-version":"3.12"},
-      {"os":"ubuntu-22.04","python-version":"3.13"},
-      {"os":"windows-latest","python-version":"3.9"},
-      {"os":"windows-latest","python-version":"3.10"},
-      {"os":"windows-latest","python-version":"3.11"},
-      {"os":"windows-latest","python-version":"3.12"},
-      {"os":"windows-latest","python-version":"3.13"},
-      {"os":"macos-latest","python-version":"3.9"},
-      {"os":"macos-latest","python-version":"3.10"},
-      {"os":"macos-latest","python-version":"3.11"},
-      {"os":"macos-latest","python-version":"3.12"},
-      {"os":"macos-latest","python-version":"3.13"}
-    ]
-
 jobs:
   supported-tests:
     if: github.event_name != 'schedule'
@@ -82,7 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJSON(github.event_name == 'pull_request' && env.PR_SMOKE_MATRIX || env.FULL_SUPPORTED_MATRIX) }}
+        include: ${{ fromJSON(github.event_name == 'pull_request' && '[{"os":"ubuntu-22.04","python-version":"3.9"},{"os":"ubuntu-22.04","python-version":"3.13"},{"os":"windows-latest","python-version":"3.13"},{"os":"macos-latest","python-version":"3.13"}]' || '[{"os":"ubuntu-22.04","python-version":"3.9"},{"os":"ubuntu-22.04","python-version":"3.10"},{"os":"ubuntu-22.04","python-version":"3.11"},{"os":"ubuntu-22.04","python-version":"3.12"},{"os":"ubuntu-22.04","python-version":"3.13"},{"os":"windows-latest","python-version":"3.9"},{"os":"windows-latest","python-version":"3.10"},{"os":"windows-latest","python-version":"3.11"},{"os":"windows-latest","python-version":"3.12"},{"os":"windows-latest","python-version":"3.13"},{"os":"macos-latest","python-version":"3.9"},{"os":"macos-latest","python-version":"3.10"},{"os":"macos-latest","python-version":"3.11"},{"os":"macos-latest","python-version":"3.12"},{"os":"macos-latest","python-version":"3.13"}]') }}
 
     steps:
       - name: Checkout ${{ github.ref }}
