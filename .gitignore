@@ -18,6 +18,15 @@ locales/
 /src/
 .DS_STORE
 .DS_Store
+/.pyi*
+/.mypy_cache
+/.nox
+/.ruff_cache
+/.pytest_cache
+/.coverage
+/.coverage.*
+/coverage.xml
+/htmlcov
 
 # debug and profile files
 logs/
@@ -33,3 +42,17 @@ logs/
 /DEBUG
 /PROFILE
 /profile*
+
+# virtual environments
+/.venv39
+/.venv310
+/.venv311
+/.venv312
+/.venv313
+/.venv314
+
+# AI files
+claude-investigation.md
+codex-investigation.md
+/.claude
+/.AGENTS
