@@ -19,6 +19,17 @@ Need help?
 * Contact us via the [Inkscape Forum](https://inkscape.org/forums/embroidery/)
 * Join our [chat channel](https://chat.inkscape.org/channel/inkstitch)
 
+# Developers
+
+For contributor setup, workflows, validation, coding/testing standards, debugging, docs workflow, CI/CD expectations, and release process, use [DEVELOPERS.md](DEVELOPERS.md) as the canonical guide.
+
+Supporting docs:
+
+* [CONTRIBUTING.md](CONTRIBUTING.md)
+* [CODING_STYLE.md](CODING_STYLE.md)
+* [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)
+* [LOCALIZATION.md](LOCALIZATION.md)
+
 # Background and Philosophy
 
 _by @lexelby, an Ink/Stitch programmer_

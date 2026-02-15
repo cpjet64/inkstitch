@@ -14,7 +14,9 @@ networkx
 shapely>=2.0.0
 lxml
 platformdirs
-numpy==2.2.6
+# Keep Python 3.9 environments installable while matching inkex's numpy<2.0 constraint.
+numpy==1.26.4 ; python_version < '3.10'
+numpy==2.2.6 ; python_version >= '3.10'
 jinja2>2.9
 requests
 
@@ -37,7 +39,10 @@ pywin32 ; sys_platform == 'win32'
 
 # Checkers: Versions pinned to stop an update to them introducing check failures
 mypy==1.19.1
-flake8==7.3.0
+black==24.10.0
+ruff==0.6.9
+nox>=2024.4.15
+pip-audit>=2.7.3
 
 # Test dependencies
 pytest

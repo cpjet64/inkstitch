@@ -5,7 +5,6 @@ from __future__ import annotations
 import nox
 
 SUPPORTED_PYTHONS = ["3.9", "3.10", "3.11", "3.12", "3.13"]
-EXPERIMENTAL_PYTHONS = ["3.14"]
 
 LINUX_WXPYTHON_WHEEL = "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-22.04/" "wxPython-4.2.2-{py_tag}-{py_tag}-linux_x86_64.whl"
 
@@ -51,15 +50,6 @@ def run_tests(session: nox.Session) -> None:
 @nox.session(python=SUPPORTED_PYTHONS)
 def ci(session: nox.Session) -> None:
     """Run tests + lint + type checks for supported Python versions."""
-    install_dev(session)
-    run_tests(session)
-    run_lint(session)
-    run_typecheck(session)
-
-
-@nox.session(python=EXPERIMENTAL_PYTHONS)
-def experimental(session: nox.Session) -> None:
-    """Run the full quality pipeline for experimental Python versions."""
     install_dev(session)
     run_tests(session)
     run_lint(session)

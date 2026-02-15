@@ -52,10 +52,22 @@ version:
 style:
 	bash -x bin/style-check
 
+.PHONY: format
+format:
+	python -m black --line-length 150 lib tests
+
 .PHONY: type-check mypy
 type-check mypy:
 	python -m mypy
 
 .PHONY: test
 test:
-	pytest
+	python -m pytest -q
+
+.PHONY: matrix-check
+matrix-check:
+	python -m nox -s ci
+
+.PHONY: matrix-check-fast
+matrix-check-fast:
+	python -m nox -s quick-3.13

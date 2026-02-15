@@ -1,6 +1,10 @@
 Ink/Stitch Localization
 =======================
 
+Developer workflow note:
+- For the canonical developer workflow (setup, validation, CI/CD expectations, release process, and localization policy summary), see [DEVELOPERS.md](DEVELOPERS.md).
+- This file remains the detailed translation process reference.
+
 The goal of the Ink/Stitch project is to put free, high-quality embroidery design tools in the hands of folks that might normally not have access to such tools.  To further that goal, we seek to support as many languages and locales as possible.
 
 Ink/Stitch supports displaying text in the user's preferred language in the following places:

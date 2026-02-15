@@ -1,4 +1,5 @@
 ### customize this file and save as DEBUG.toml
+### canonical debug workflow and policy guide: DEVELOPERS.md ("Debug Harness Guide")
 
 [LIBRARY]
 ### use the pip installed version of inkex.py, default: true

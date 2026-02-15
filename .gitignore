@@ -27,6 +27,7 @@ locales/
 /.coverage.*
 /coverage.xml
 /htmlcov
+/ci-artifacts/
 
 # debug and profile files
 logs/
@@ -44,12 +45,7 @@ logs/
 /profile*
 
 # virtual environments
-/.venv39
-/.venv310
-/.venv311
-/.venv312
-/.venv313
-/.venv314
+/.venv/
 
 # AI files
 claude-investigation.md

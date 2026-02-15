@@ -1,4 +1,5 @@
 ### customize this file and save as LOGGING.toml
+### canonical debug/logging workflow and policy guide: DEVELOPERS.md ("Debug Harness Guide")
 ### logging/warning template for inkstitch
 ### format: toml
 ### enable config file in DEBUG.toml: log_config_file

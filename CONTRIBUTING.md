@@ -2,13 +2,27 @@ We're so happy you're interested in contributing to Ink/Stitch!  There's a lot t
 
 Before you contribute, **please have a look at our [code of conduct](CODE_OF_CONDUCT.md)**.  Thanks!
 
-Feel free to find something that interests you.  If you're looking for ideas, consider this list:
+For the full developer workflow and contribution contract, start with **[DEVELOPERS.md](DEVELOPERS.md)**.
+It is the canonical source for:
+
+* setup and daily commands
+* test/style/type-check expectations
+* coding and readability rules
+* commit and PR standards
+* CI/CD and release expectations
+* debug and docs workflows
+
+Companion documents:
+
+* [CODING_STYLE.md](CODING_STYLE.md)
+* [LOCALIZATION.md](LOCALIZATION.md)
+
+If you're looking for ideas, consider this list:
 
 * coding (Python, Javascript)
-  * **please read our [coding style guide](CODING_STYLE.md)**
 * build / CI system (GitHub actions)
   * we need someone to figure out how we can start code-signing our application
-* translations ([how to translate](https://github.com/inkstitch/inkstitch/blob/main/LOCALIZATION.md))
+* translations ([LOCALIZATION.md](LOCALIZATION.md))
 * issue wrangling
   * combining duplicate issues
   * welcoming first-time bug/issue reporters

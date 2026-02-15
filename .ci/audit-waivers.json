@@ -1,0 +1,11 @@
+{
+  "waivers": [
+    {
+      "package": "diskcache",
+      "id": "CVE-2025-69872",
+      "owner": "maintainers@inkstitch",
+      "reason": "No patched diskcache release is currently available; temporary waiver until upstream fix ships.",
+      "expires": "2026-06-30"
+    }
+  ]
+}

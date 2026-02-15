@@ -47,8 +47,8 @@ When guidance overlaps, use this precedence:
 ### 4.1 Windows (PowerShell; Git Bash optional)
 
 ```powershell
-py -3.11 -m venv .venv311
-.venv311\Scripts\Activate.ps1
+py -3.13 -m venv .venv/3.13
+.venv\3.13\Scripts\Activate.ps1
 python -m pip install --upgrade pip wheel
 python -m pip install -r requirements.txt
 python -m pytest -q
@@ -56,7 +56,7 @@ python -m mypy
 ```
 
 If PowerShell execution policy blocks activation, run commands via the venv interpreter directly:
-`.\.venv311\Scripts\python.exe -m <command>`.
+`.\.venv\3.13\Scripts\python.exe -m <command>`.
 
 Style check options:
 
@@ -71,8 +71,8 @@ python -m ruff check .
 ### 4.2 Linux
 
 ```bash
-python3.11 -m venv .venv311
-source .venv311/bin/activate
+python3.13 -m venv .venv/3.13
+source .venv/3.13/bin/activate
 python -m pip install --upgrade pip wheel
 python -m pip install -r requirements.txt
 python -m pytest -q
@@ -83,8 +83,8 @@ make style
 ### 4.3 macOS
 
 ```bash
-python3.11 -m venv .venv311
-source .venv311/bin/activate
+python3.13 -m venv .venv/3.13
+source .venv/3.13/bin/activate
 python -m pip install --upgrade pip wheel
 python -m pip install -r requirements.txt
 python -m pytest -q
@@ -99,23 +99,17 @@ Current repository reality:
 1. CI test workflow is matrix-gated for Python `3.9` through `3.13` (`.github/workflows/test.yml`).
 2. Build/release workflows currently package with Python `3.11.x` (`.github/workflows/build.yml`).
 3. Translation automation currently runs on Python `3.12.x` (`.github/workflows/translations.yml`).
-4. Python `3.14` is currently treated as experimental/forward-compatibility, not CI-gated.
 
 Contributor default:
 
-1. Use Python `3.11` for day-to-day development unless a task explicitly targets another version.
-2. Treat Python `3.14` as a compatibility-check environment until CI support is added.
+1. Use Python `3.13` for day-to-day development unless a task explicitly targets another version.
 
 Local venv naming convention:
 
-1. `.venv39`
-2. `.venv310`
-3. `.venv311` (primary contributor environment)
-4. `.venv312`
-5. `.venv313`
-6. `.venv314` (forward-compatibility checks)
+1. `.venv/3.13` (primary contributor environment)
+2. Optional extra interpreters use `.venv/<major.minor>` (example: `.venv/3.11`)
 
-Rule: keep these names stable so `.gitignore` and automation expectations stay predictable.
+Rule: keep `.venv/<major.minor>` stable so `.gitignore` and automation expectations stay predictable.
 
 ## 6. Repo Map (Top-Level)
 
@@ -194,7 +188,7 @@ Notes:
 | Stage | Minimum required locally |
 | --- | --- |
 | Before commit | Let `pre-commit` run fast staged-file checks; add targeted tests for changed area when behavior changes |
-| Before push | Let `pre-push` run strict nox checks (`ci` + `package-3.13` + `audit-3.13`); `experimental-3.14` remains non-blocking |
+| Before push | Let `pre-push` run strict nox checks (`ci` + `package-3.13` + `audit-3.13`) |
 | Before PR | `python -m pytest -q`, `python -m mypy`, style check (`make style` or direct `python -m ruff check .`) |
 | Before release/tag | Full test suite, style, mypy, plus packaging sanity (`make dist` on release platform) |
 
@@ -340,7 +334,7 @@ Current workflows:
 
 1. `.github/workflows/test.yml`:
    runs on PR/push to `main` with Python `3.9`-`3.13` through nox `ci-*`, plus `packaging+py3.13`.
-   Also includes non-blocking `experimental+py3.14`; `audit+py3.13` is blocking with waiver policy.
+   Also includes `audit+py3.13` as a blocking check with waiver policy.
 2. `.github/workflows/dependency-review.yml`:
    runs on PRs that touch dependency manifests or workflow files and blocks on high-severity supply-chain risk.
 3. `.github/dependabot.yml`:
@@ -365,7 +359,7 @@ Reproducing CI locally:
 3. `make style` (or the direct `python -m ruff check .` fallback on Windows without bash)
 4. `python -m nox -s ci` for full local cross-version validation.
 5. `python -m nox -s package-3.13` for packaging smoke checks.
-6. `python -m nox -s audit-3.13` for blocking audit checks and `python -m nox -s experimental-3.14` for non-blocking parity checks.
+6. `python -m nox -s audit-3.13` for blocking audit checks.
 7. Install and use git hooks for local guardrails:
    `pre-commit` (fast) and `pre-push` (strict) via `bash .githooks/install.sh` or `.\.githooks\install.ps1`.
 

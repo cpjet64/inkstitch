@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+cd "$repo_root"
+
+select_python() {
+  local candidates=(
+    ".venv/3.13/Scripts/python.exe"
+    ".venv/3.13/bin/python"
+  )
+  local candidate
+  for candidate in "${candidates[@]}"; do
+    if [[ -x "$candidate" ]]; then
+      echo "$candidate"
+      return 0
+    fi
+  done
+  if command -v python >/dev/null 2>&1; then
+    echo "python"
+    return 0
+  fi
+  return 1
+}
+
+if ! PYTHON="$(select_python)"; then
+  echo "[pre-commit] Could not find a Python interpreter. Create a project venv first."
+  exit 1
+fi
+
+mapfile -t staged_python_files < <(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.py$' || true)
+if [[ ${#staged_python_files[@]} -eq 0 ]]; then
+  echo "[pre-commit] No staged Python files. Skipping fast checks."
+  exit 0
+fi
+
+echo "[pre-commit] Fast syntax check for staged Python files..."
+"$PYTHON" -m py_compile "${staged_python_files[@]}"
+
+echo "[pre-commit] Fast ruff check for staged Python files..."
+"$PYTHON" -m ruff check "${staged_python_files[@]}"
+
+echo "[pre-commit] Fast black check for staged Python files..."
+"$PYTHON" -m black --check --line-length 150 "${staged_python_files[@]}"
+
+echo "[pre-commit] Fast checks passed."
