@@ -96,7 +96,9 @@ make style
 
 Current repository reality:
 
-1. CI test workflow is matrix-gated for Python `3.9` through `3.13` (`.github/workflows/test.yml`).
+1. CI quality workflow uses two tiers in `.github/workflows/test.yml`:
+   PRs run a reduced smoke matrix (`ubuntu 3.9/3.13`, `windows 3.13`, `macOS 3.13`) plus a dedicated quality job.
+   Pushes to `main` run the full supported matrix (`3.9`-`3.13` across Linux/Windows/macOS) plus packaging and audit.
 2. Build/release workflows currently package with Python `3.11.x` (`.github/workflows/build.yml`).
 3. Translation automation currently runs on Python `3.12.x` (`.github/workflows/translations.yml`).
 
@@ -333,8 +335,10 @@ PR checklist:
 Current workflows:
 
 1. `.github/workflows/test.yml`:
-   runs on PR/push to `main` with Python `3.9`-`3.13` through nox `ci-*`, plus `packaging+py3.13`.
-   Also includes `audit+py3.13` as a blocking check with waiver policy.
+   uses a fast PR lane and strict main-branch lane.
+   PRs run nox `tests-*` on a smoke matrix plus `quality+py3.13`.
+   Pushes to `main` run nox `tests-*` on the full `3.9`-`3.13` OS matrix, plus `packaging+py3.13` and blocking `audit+py3.13`.
+   Nightly schedule runs `audit+py3.13` for ongoing dependency risk checks.
 2. `.github/workflows/dependency-review.yml`:
    runs on PRs that touch dependency manifests or workflow files and blocks on high-severity supply-chain risk.
 3. `.github/dependabot.yml`:
@@ -346,9 +350,9 @@ Current workflows:
 
 Required passing checks:
 
-1. Test workflow must pass for merge confidence.
-2. Style must pass.
-3. Mypy must pass in CI.
+1. PR smoke matrix and `quality+py3.13` must pass for merge confidence.
+2. Push-to-main full matrix must pass before packaging runs.
+3. Style and mypy must pass in the dedicated quality job.
 4. Audit job must pass; approved exceptions must be listed in `.ci/audit-waivers.json` with owner/reason/expiry.
 5. Dependency review must pass on dependency/workflow-changing PRs.
 
@@ -357,10 +361,12 @@ Reproducing CI locally:
 1. `python -m pytest -q`
 2. `python -m mypy`
 3. `make style` (or the direct `python -m ruff check .` fallback on Windows without bash)
-4. `python -m nox -s ci` for full local cross-version validation.
-5. `python -m nox -s package-3.13` for packaging smoke checks.
-6. `python -m nox -s audit-3.13` for blocking audit checks.
-7. Install and use git hooks for local guardrails:
+4. `python -m nox -s tests-3.13` for the default local test lane.
+5. `python -m nox -s quality-3.13` for CI-equivalent lint + type checks.
+6. `python -m nox -s ci` for full local cross-version strict validation.
+7. `python -m nox -s package-3.13` for packaging smoke checks.
+8. `python -m nox -s audit-3.13` for blocking audit checks.
+9. Install and use git hooks for local guardrails:
    `pre-commit` (fast) and `pre-push` (strict) via `bash .githooks/install.sh` or `.\.githooks\install.ps1`.
 
 ## 16. Sphinx Docs Workflow (Current + Target)

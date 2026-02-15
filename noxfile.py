@@ -56,6 +56,21 @@ def ci(session: nox.Session) -> None:
     run_typecheck(session)
 
 
+@nox.session(name="tests", python=SUPPORTED_PYTHONS)
+def tests_only(session: nox.Session) -> None:
+    """Run tests only for a supported Python version."""
+    install_dev(session)
+    run_tests(session)
+
+
+@nox.session(name="quality", python=["3.13"])
+def quality_only(session: nox.Session) -> None:
+    """Run lint + type checks once on the primary interpreter."""
+    install_dev(session)
+    run_lint(session)
+    run_typecheck(session)
+
+
 @nox.session(python=["3.13"])
 def quick(session: nox.Session) -> None:
     """Fast local iteration on the primary development interpreter."""
