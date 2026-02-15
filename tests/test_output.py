@@ -1,7 +1,9 @@
 from unittest.mock import PropertyMock, patch
+import os
+import tempfile
 
+import pytest
 from inkex import Rectangle, SvgDocumentElement
-from inkex.tester import TestCase
 from inkex.tester.svg import svg
 
 from lib import output
@@ -10,7 +12,7 @@ from lib.stitch_plan.stitch_plan import stitch_groups_to_stitch_plan
 from lib.svg.tags import INKSTITCH_ATTRIBS
 
 
-class OutputTest(TestCase):
+class TestOutput:
     def _make_stitch_plan(self, svg_doc: SvgDocumentElement):
         # TODO: support SVGs with more than one element
         # (turn InkstitchExtension.elements_to_stitch_groups into a function so we can use it here?)
@@ -33,12 +35,22 @@ class OutputTest(TestCase):
 
     def _get_output(self, svg: SvgDocumentElement, format: str) -> bytes:
         stitch_plan = self._make_stitch_plan(svg)
-        path = self.temp_file(suffix=f".{format}")
-        output.write_embroidery_file(path, stitch_plan, svg, settings={
-            "date": "",  # we need the output to be deterministic for the tests
-        })
-        with open(path, "rb") as f:
-            return f.read()
+        fd, path = tempfile.mkstemp(suffix=f".{format}")
+        os.close(fd)
+        try:
+            output.write_embroidery_file(
+                path,
+                stitch_plan,
+                svg,
+                settings={
+                    "date": "",  # we need the output to be deterministic for the tests
+                },
+            )
+            with open(path, "rb") as f:
+                return f.read()
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
 
     def test_jef_output_does_not_change(self):
         root = self._build_rect_svg()
@@ -94,14 +106,14 @@ class OutputTest(TestCase):
         root = self._build_rect_svg()
         stitch_plan = self._make_stitch_plan(root)
 
-        with patch(
-            "lib.output.pystitch.write",
-            side_effect=output.TooManyColorChangesError("There are 42 color changes.")
-        ), patch("lib.output.inkex.errormsg") as errormsg:
-            with self.assertRaises(SystemExit) as context:
+        with (
+            patch("lib.output.pystitch.write", side_effect=output.TooManyColorChangesError("There are 42 color changes.")),
+            patch("lib.output.inkex.errormsg") as errormsg,
+        ):
+            with pytest.raises(SystemExit) as context:
                 output.write_embroidery_file("test.jef", stitch_plan, root)
 
-        assert context.exception.code == 1
+        assert context.value.code == 1
         errormsg.assert_called_once()
         message = errormsg.call_args[0][0]
         assert "42" in message
@@ -111,14 +123,14 @@ class OutputTest(TestCase):
         root = self._build_rect_svg()
         stitch_plan = self._make_stitch_plan(root)
 
-        with patch(
-            "lib.output.pystitch.write",
-            side_effect=output.TooManyColorChangesError("Too many color changes.")
-        ), patch("lib.output.inkex.errormsg") as errormsg:
-            with self.assertRaises(SystemExit) as context:
+        with (
+            patch("lib.output.pystitch.write", side_effect=output.TooManyColorChangesError("Too many color changes.")),
+            patch("lib.output.inkex.errormsg") as errormsg,
+        ):
+            with pytest.raises(SystemExit) as context:
                 output.write_embroidery_file("test.jef", stitch_plan, root)
 
-        assert context.exception.code == 1
+        assert context.value.code == 1
         errormsg.assert_called_once()
         message = errormsg.call_args[0][0]
         assert "?" in message
@@ -127,9 +139,7 @@ class OutputTest(TestCase):
         root = self._build_rect_svg()
         stitch_plan = self._make_stitch_plan(root)
 
-        with patch.object(type(root), "name", new_callable=PropertyMock, return_value=None), patch(
-            "lib.output.pystitch.write"
-        ) as write_mock:
+        with patch.object(type(root), "name", new_callable=PropertyMock, return_value=None), patch("lib.output.pystitch.write") as write_mock:
             output.write_embroidery_file("test.jef", stitch_plan, root)
 
         pattern = write_mock.call_args[0][0]
