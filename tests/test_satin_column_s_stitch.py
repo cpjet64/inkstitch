@@ -1,3 +1,5 @@
+from typing import cast
+
 from lib.elements.satin_column import SatinColumn
 from lib.utils.geometry import Point
 
@@ -36,7 +38,7 @@ class DummySatinColumn:
 
 
 def test_do_s_stitch_includes_inter_row_subdivision_points():
-    satin = DummySatinColumn()
+    satin = cast(SatinColumn, DummySatinColumn())
 
     stitch_group = SatinColumn.do_s_stitch(satin)
 

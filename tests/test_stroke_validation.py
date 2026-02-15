@@ -1,10 +1,11 @@
+from typing import Any, cast
 from unittest.mock import patch
 
 from lib.elements.stroke import MultipleGuideLineWarning, Stroke
 
 
 def test_validation_warnings_reports_multiple_guidelines_for_ripple_stitch():
-    stroke = object.__new__(Stroke)
+    stroke = cast(Any, object.__new__(Stroke))
     stroke.node = object()
     stroke.get_boolean_param = lambda name, default=False: False
     stroke.get_param = lambda name, default=None: "ripple_stitch"

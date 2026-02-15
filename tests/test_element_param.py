@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 import pytest
 
 from lib.elements.element import EmbroideryElement, Param
@@ -29,13 +31,15 @@ def test_param_copies_caller_lists():
 
 def test_shape_not_implemented_message_is_formatted():
     element = object.__new__(EmbroideryElement)
+    shape_property = cast(Any, EmbroideryElement.shape)
 
     with pytest.raises(NotImplementedError, match="EmbroideryElement must implement shape\\(\\)"):
-        EmbroideryElement.shape.fget(element)
+        shape_property.fget(element)
 
 
 def test_first_stitch_not_implemented_message_is_formatted():
     element = object.__new__(EmbroideryElement)
+    first_stitch_property = cast(Any, EmbroideryElement.first_stitch)
 
     with pytest.raises(NotImplementedError, match="EmbroideryElement must implement first_stitch\\(\\)"):
-        EmbroideryElement.first_stitch.fget(element)
+        first_stitch_property.fget(element)

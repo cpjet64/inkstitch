@@ -1,3 +1,4 @@
+from typing import Any, cast
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -8,7 +9,7 @@ from lib.extensions.select_elements import SelectElements
 
 
 def _extension_with_python_path(python_path=""):
-    extension = object.__new__(SelectElements)
+    extension = cast(Any, object.__new__(SelectElements))
     extension.options = SimpleNamespace(python_path=python_path)
     return extension
 

@@ -1,3 +1,5 @@
+from typing import Any, cast
+
 from lib.utils.cache import METHOD_CACHE_SIZE, cache
 
 
@@ -18,9 +20,11 @@ def test_cache_decorator_reuses_cached_method_result():
     assert thing.compute(2) == 20
 
     assert thing.calls == 1
-    CachedThing.compute.cache_clear()
+    cached_compute = cast(Any, CachedThing.compute)
+    cached_compute.cache_clear()
 
 
 def test_cache_decorator_uses_bounded_maxsize():
-    assert CachedThing.compute.cache_info().maxsize == METHOD_CACHE_SIZE
-    CachedThing.compute.cache_clear()
+    cached_compute = cast(Any, CachedThing.compute)
+    assert cached_compute.cache_info().maxsize == METHOD_CACHE_SIZE
+    cached_compute.cache_clear()

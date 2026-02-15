@@ -1,3 +1,4 @@
+from typing import Any, cast
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
@@ -10,7 +11,7 @@ class DummyStitchPlan:
 
 
 def test_zip_effect_returns_early_when_no_formats_selected():
-    extension = object.__new__(Zip)
+    extension = cast(Any, object.__new__(Zip))
     extension.options = SimpleNamespace(x_repeats=1, y_repeats=1, custom_file_name="", dst=False)
     extension.formats = ["dst"]
     extension.elements = [object()]

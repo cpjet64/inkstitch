@@ -7,7 +7,7 @@ from lib.sew_stack.stitch_layers.stitch_layer_editor import StitchLayerEditor
 
 class Base:
     @classproperty
-    def value(cls):
+    def value(cls: type["Base"]) -> str:
         return cls.__name__
 
 

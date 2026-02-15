@@ -1,3 +1,4 @@
+from typing import Any, cast
 from types import SimpleNamespace
 from unittest.mock import Mock, call, patch
 
@@ -45,7 +46,7 @@ class RaisingZipFile:
 
 
 def test_output_effect_cleans_temp_file_when_export_raises():
-    extension = object.__new__(Output)
+    extension = cast(Any, object.__new__(Output))
     extension.file_extension = "dst"
     extension.settings = {}
     extension.elements = []
@@ -72,7 +73,7 @@ def test_output_effect_cleans_temp_file_when_export_raises():
 
 
 def test_zip_effect_cleans_generated_files_when_zipping_fails():
-    extension = object.__new__(Zip)
+    extension = cast(Any, object.__new__(Zip))
     extension.options = SimpleNamespace(x_repeats=1, y_repeats=1, custom_file_name="")
     extension.formats = ["dst", "pes"]
     extension.options.dst = True
@@ -104,7 +105,7 @@ def test_zip_effect_cleans_generated_files_when_zipping_fails():
 
 
 def test_batch_lettering_cleans_generated_files_when_zipping_fails():
-    extension = object.__new__(BatchLettering)
+    extension = cast(Any, object.__new__(BatchLettering))
     extension.svg = SimpleNamespace(findone=lambda selector: None)
     extension.get_inkstitch_metadata = lambda: {
         "collapse_len_mm": 3,

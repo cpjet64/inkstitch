@@ -37,9 +37,9 @@ def test_build_double_cycle_uses_potential_node_for_row_tour(monkeypatch):
 
 
 def test_build_eulerian_cycles_uses_ending_corner_for_last_subgraph(monkeypatch):
-    first_subgraph = nx.Graph()
+    first_subgraph: nx.Graph = nx.Graph()
     first_subgraph.add_node("fallback-first")
-    last_subgraph = nx.Graph()
+    last_subgraph: nx.Graph = nx.Graph()
     last_subgraph.add_node("fallback-last")
 
     start_point = "START"
@@ -115,9 +115,9 @@ def test_insert_cycle_at_node_returns_original_cycle_when_node_missing():
 
 
 def test_find_index_subgraph_returns_matching_index(monkeypatch):
-    first = nx.Graph()
+    first: nx.Graph = nx.Graph()
     first.add_node("a")
-    second = nx.Graph()
+    second: nx.Graph = nx.Graph()
     second.add_node("b")
 
     monkeypatch.setattr(cross_stitch_module, "get_corner", lambda point, crosses: "b")
@@ -129,7 +129,7 @@ def test_find_index_subgraph_returns_matching_index(monkeypatch):
 
 
 def test_find_index_subgraph_raises_clear_error_when_not_found(monkeypatch):
-    graph = nx.Graph()
+    graph: nx.Graph = nx.Graph()
     graph.add_node("a")
 
     monkeypatch.setattr(cross_stitch_module, "get_corner", lambda point, crosses: "missing")

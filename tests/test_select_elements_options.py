@@ -1,3 +1,4 @@
+from typing import Any, cast
 from types import SimpleNamespace
 
 from lib.extensions.select_elements import SelectElements
@@ -12,7 +13,7 @@ class DummyNode:
 
 
 def test_running_condition_invalid_option_returns_false():
-    extension = object.__new__(SelectElements)
+    extension = cast(Any, object.__new__(SelectElements))
     extension.options = SimpleNamespace(running_stitch_condition="invalid-condition")
 
     element = SimpleNamespace(node=DummyNode())
@@ -21,7 +22,7 @@ def test_running_condition_invalid_option_returns_false():
 
 
 def test_fill_underlay_invalid_option_returns_false():
-    extension = object.__new__(SelectElements)
+    extension = cast(Any, object.__new__(SelectElements))
     extension.options = SimpleNamespace(fill_underlay="invalid-underlay")
 
     element = SimpleNamespace(fill_underlay=True)
@@ -30,7 +31,7 @@ def test_fill_underlay_invalid_option_returns_false():
 
 
 def test_satin_filters_invalid_option_returns_false():
-    extension = object.__new__(SelectElements)
+    extension = cast(Any, object.__new__(SelectElements))
     extension.options = SimpleNamespace(satin_underlay="invalid-underlay", rung_count="invalid-count")
 
     element = SimpleNamespace(

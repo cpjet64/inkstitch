@@ -483,7 +483,7 @@ class TartanSvgGroup:
 
         if self.rotate != 0:
             # add as much space as necessary to perform a rotation without producing gaps
-            min_radius = minimum_bounding_radius(outline)
+            min_radius = float(minimum_bounding_radius(outline))
             minx = center.x - min_radius
             miny = center.y - min_radius
             maxx = center.x + min_radius

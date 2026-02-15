@@ -1,3 +1,4 @@
+from typing import Any, cast
 from unittest.mock import PropertyMock, patch
 
 from shapely.geometry import MultiPolygon, Polygon
@@ -54,7 +55,7 @@ def test_validation_warnings_uses_individual_shape_area_for_small_shape_warning(
         new_callable=PropertyMock,
         return_value=0,
     ), patch.object(FillStitch, "expand", new_callable=PropertyMock, return_value=0):
-        fill = object.__new__(FillStitch)
+        fill = cast(Any, object.__new__(FillStitch))
         fill.node = DummyNode()
         fill.shrink_or_grow_shape = lambda shape, amount, validate=False: shape
         fill.get_param = lambda name, default=None: default
@@ -87,7 +88,7 @@ def test_validation_warnings_guided_fill_continues_after_missing_guide_line():
         "_get_guide_lines",
         return_value=[],
     ):
-        fill = object.__new__(FillStitch)
+        fill = cast(Any, object.__new__(FillStitch))
         fill.node = DummyNodeWithStroke()
         fill.shrink_or_grow_shape = lambda shape, amount, validate=False: shape
         fill.get_param = lambda name, default=None: default
@@ -109,7 +110,7 @@ def test_validation_errors_handles_unexpected_validity_message_format():
         new_callable=PropertyMock,
         return_value=invalid_shape,
     ), patch("lib.elements.fill_stitch.explain_validity", return_value="unexpected format"):
-        fill = object.__new__(FillStitch)
+        fill = cast(Any, object.__new__(FillStitch))
         errors = list(FillStitch.validation_errors(fill))
 
     assert len(errors) == 1
@@ -139,7 +140,7 @@ def test_validation_warnings_handles_unexpected_validity_message_format():
         "lib.elements.fill_stitch.explain_validity",
         return_value="unexpected format",
     ):
-        fill = object.__new__(FillStitch)
+        fill = cast(Any, object.__new__(FillStitch))
         fill.node = DummyNode()
         fill.shrink_or_grow_shape = lambda shape, amount, validate=False: shape
         fill.get_param = lambda name, default=None: default
